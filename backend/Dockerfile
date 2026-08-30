@@ -38,6 +38,15 @@ COPY . .
 # Create logs directory
 RUN mkdir -p logs
 
+# Run as a non-root user. UID/GID 1000 matches the default first non-root
+# user on most Linux hosts, which keeps bind-mount permissions sane in
+# docker-compose dev usage. chown covers /app (app code + logs/) and the
+# Spark home marker file written above.
+RUN groupadd --gid 1000 appuser \
+    && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser \
+    && chown -R appuser:appuser /app /etc/spark_home
+USER appuser
+
 # Expose port
 EXPOSE 8000
 

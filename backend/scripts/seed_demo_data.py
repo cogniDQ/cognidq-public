@@ -306,7 +306,7 @@ def main() -> int:
         conn.rollback()
         print(f"\n✗  Seed failed: {exc}", file=sys.stderr)
         print("\nMake sure migrations have been applied first:", file=sys.stderr)
-        print("   docker compose exec backend python scripts/run_migrations.py", file=sys.stderr)
+        print("   docker compose exec backend alembic upgrade head", file=sys.stderr)
         cur.close()
         conn.close()
         return 1

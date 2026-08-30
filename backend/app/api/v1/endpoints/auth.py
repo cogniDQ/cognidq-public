@@ -7,6 +7,7 @@ import logging
 from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
+from app.core.rate_limit import limiter
 from app.models.database import get_db
 from app.models.user import User
 from app.schemas.auth import (
@@ -53,6 +54,7 @@ def get_client_ip(request: Request) -> str:
 
 
 @router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
 def register(request: RegisterRequest, req: Request, db: Session = Depends(get_db)):
     """
     Register a new user
@@ -68,6 +70,7 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
 
 
 @router.post("/login", response_model=LoginResponse)
+@limiter.limit("10/minute")
 def login(request: LoginRequest, req: Request, db: Session = Depends(get_db)):
     """
     Login with email and password
@@ -252,7 +255,10 @@ def change_password(
 
 
 @router.post("/password-reset/request", response_model=MessageResponse)
-def request_password_reset(request: PasswordResetRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def request_password_reset(
+    request: PasswordResetRequest, req: Request, db: Session = Depends(get_db)
+):
     """
     Request password reset
 
@@ -265,7 +271,10 @@ def request_password_reset(request: PasswordResetRequest, db: Session = Depends(
 
 
 @router.post("/password-reset/confirm", response_model=MessageResponse)
-def confirm_password_reset(request: PasswordResetConfirm, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def confirm_password_reset(
+    request: PasswordResetConfirm, req: Request, db: Session = Depends(get_db)
+):
     """
     Confirm password reset with token
 

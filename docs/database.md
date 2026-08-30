@@ -66,18 +66,14 @@ path for a bad migration is **restore from backup**, not `downgrade`.
 
 ## Bootstrap
 
-There are two ways to bootstrap an empty database:
+Bootstrap an empty database by applying every migration:
 
-1. **From migrations (recommended for production):**
-   ```bash
-   docker compose exec backend alembic upgrade head
-   ```
-   This applies the full migration sequence.
+```bash
+docker compose exec backend alembic upgrade head
+```
 
-2. **From the legacy SQL bundle (`backend/scripts/init_db.sql`,
-   internal):** kept for compatibility with old QA flows.
-   Do not use this path for new deployments — it can drift from the
-   migration sequence.
+The first migration (`0001_baseline`) replays the schema in one shot;
+later migrations apply incrementally on top of it.
 
 ## Seed data
 

@@ -7,6 +7,7 @@
 #   make stop        stop the local stack
 #   make logs        tail backend + worker logs
 #   make migrate     apply database migrations
+#   make makemigration MSG="..."   generate a new Alembic migration
 #   make seed        load demo seed data
 #   make test        run backend + frontend tests
 #   make lint        run linters
@@ -89,8 +90,12 @@ ps: ## Show running services
 # ----------------------------------------------------------------------
 
 .PHONY: migrate
-migrate: ## Apply database migrations (runs SQL files in backend/scripts/migrations/)
-	$(COMPOSE) exec $(BACKEND_SERVICE) python scripts/run_migrations.py
+migrate: ## Apply database migrations (Alembic)
+	$(COMPOSE) exec $(BACKEND_SERVICE) alembic upgrade head
+
+.PHONY: makemigration
+makemigration: ## Generate a new Alembic migration (usage: make makemigration MSG="add foo column")
+	$(COMPOSE) exec $(BACKEND_SERVICE) alembic revision --autogenerate -m "$(MSG)"
 
 .PHONY: seed
 seed: ## Load demo seed data (synthetic only)

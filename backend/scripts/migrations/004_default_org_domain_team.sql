@@ -85,7 +85,7 @@ SELECT
 FROM permissions
 ON CONFLICT (role_id, permission_id) DO NOTHING;
 
--- Assign Admin role to Ahmed at organization level
+-- Assign Admin role to the default admin user at organization level
 INSERT INTO user_role_assignments (
     user_id, 
     role_id, 

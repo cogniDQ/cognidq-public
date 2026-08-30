@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
 Database migration runner
+
+DEPRECATED: schema management has moved to Alembic. Use
+``alembic upgrade head`` (or ``make migrate``) instead — see
+docs/database.md. This script is kept only as a fallback for
+environments that have not yet adopted Alembic; it is not used by
+any documented setup path.
 """
 
 import sys

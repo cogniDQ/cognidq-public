@@ -76,7 +76,7 @@ cp frontend/.env.example frontend/.env
 # (and copy the same values to backend/.env).
 
 docker compose up -d
-docker compose exec backend python scripts/run_migrations.py
+docker compose exec backend alembic upgrade head
 docker compose exec backend python scripts/seed_demo_data.py
 ```
 
