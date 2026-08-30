@@ -54,6 +54,7 @@ Makefile     text eol=lf
 /CI_GREEN_HANDOFF.md                 export-ignore
 /INSTALL_AUDIT.md                    export-ignore
 /OSS_READINESS_AUDIT.md              export-ignore
+/MANUAL_ACTIONS_REQUIRED.md          export-ignore
 /docs/publishing-to-fresh-repo.md    export-ignore
 /docs/open-source-strategy.md        export-ignore
 /docs/page-scope-decisions.md        export-ignore

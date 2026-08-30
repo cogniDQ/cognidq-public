@@ -37,8 +37,8 @@ Prerequisites:
 - Node.js 18+ (or use the frontend container)
 
 ```bash
-git clone https://github.com/aiexplainedhub/cognidq.git
-cd cognidq
+git clone https://github.com/cogniDQ/cognidq-public.git
+cd cognidq-public
 cp backend/.env.example backend/.env
 # Generate two Fernet keys and put them in backend/.env (see comments).
 docker compose up -d

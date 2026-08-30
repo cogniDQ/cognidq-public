@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/aiexplainedhub/cognidq/security/advisories/new
+    url: https://github.com/cogniDQ/cognidq-public/security/advisories/new
     about: Please report security issues privately. See SECURITY.md.
   - name: Question or discussion
-    url: https://github.com/aiexplainedhub/cognidq/discussions
+    url: https://github.com/cogniDQ/cognidq-public/discussions
     about: Use GitHub Discussions for general questions and design discussions.

@@ -61,8 +61,8 @@ failures.
 ## Quick start
 
 ```bash
-git clone https://github.com/aiexplainedhub/cognidq.git
-cd cognidq
+git clone https://github.com/cogniDQ/cognidq-public.git
+cd cognidq-public
 
 # Create env files (root .env is read by Docker Compose for variable interpolation)
 cp .env.example .env
@@ -183,8 +183,8 @@ We welcome contributions — bug reports, feature requests, docs, code.
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR.
 
 If you are unsure whether something fits, please open an
-[issue](https://github.com/aiexplainedhub/cognidq/issues) or a
-[discussion](https://github.com/aiexplainedhub/cognidq/discussions)
+[issue](https://github.com/cogniDQ/cognidq-public/issues) or a
+[discussion](https://github.com/cogniDQ/cognidq-public/discussions)
 first.
 
 This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
@@ -193,7 +193,7 @@ By participating, you are expected to uphold it.
 ## Security
 
 Found a vulnerability? **Do not open a public issue.** Report it
-privately via [GitHub Security Advisories](https://github.com/aiexplainedhub/cognidq/security/advisories/new),
+privately via [GitHub Security Advisories](https://github.com/cogniDQ/cognidq-public/security/advisories/new),
 following [SECURITY.md](SECURITY.md).
 
 The default compose configuration is **not safe for production

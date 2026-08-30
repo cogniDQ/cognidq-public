@@ -96,8 +96,12 @@ def _resolve_tenant_id(workspace_id: UUID, actor: DatasetActorContext, db: Sessi
         {"wid": str(workspace_id)},
     ).fetchone()
     if not row or not row.tenant_id:
-        raise DatasetAPIError(status_code=404, code="WORKSPACE_NOT_FOUND", message="Workspace not found")
+        raise DatasetAPIError(
+            status_code=404, code="WORKSPACE_NOT_FOUND", message="Workspace not found"
+        )
     return row.tenant_id
+
+
 _audit_svc = AuditService()
 
 

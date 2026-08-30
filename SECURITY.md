@@ -7,7 +7,7 @@
 If you believe you have found a security vulnerability in CogniDQ,
 report it privately through one of these channels:
 
-1. **Preferred:** [GitHub Security Advisories](https://github.com/aiexplainedhub/cognidq/security/advisories/new)
+1. **Preferred:** [GitHub Security Advisories](https://github.com/cogniDQ/cognidq-public/security/advisories/new)
    on this repository. This creates a private advisory only the
    maintainers can see.
 2. **Email:** open a placeholder issue asking for a contact address;

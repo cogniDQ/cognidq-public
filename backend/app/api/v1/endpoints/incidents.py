@@ -22,6 +22,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import JSONResponse, Response
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.api.v1.dependencies.workspace_auth import (
@@ -60,7 +61,6 @@ from app.services.incidents.incident_service import (
     IncidentValidationError,
     IssueNotFoundError,
 )
-from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
 

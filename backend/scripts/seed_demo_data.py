@@ -35,13 +35,13 @@ from app.core.config import settings  # noqa: E402
 # Platform bootstrap admin — same UUID hard-coded in 004_default_org_domain_team.sql
 BOOTSTRAP_ADMIN_UUID = UUID("63cae557-c3bc-4442-8592-58205e772aa6")
 
-DEMO_TENANT_UUID      = UUID("10000000-1000-4000-8000-000000000001")
-DEMO_WORKSPACE_UUID   = UUID("20000000-2000-4000-8000-000000000002")
+DEMO_TENANT_UUID = UUID("10000000-1000-4000-8000-000000000001")
+DEMO_WORKSPACE_UUID = UUID("20000000-2000-4000-8000-000000000002")
 
-DEMO_TENANT_ADMIN_UUID  = UUID("10000001-1000-4000-8000-000000000001")
-DEMO_WS_ADMIN_UUID      = UUID("20000001-2000-4000-8000-000000000001")
-DEMO_STEWARD_UUID       = UUID("20000002-2000-4000-8000-000000000002")
-DEMO_VIEWER_UUID        = UUID("20000003-2000-4000-8000-000000000003")
+DEMO_TENANT_ADMIN_UUID = UUID("10000001-1000-4000-8000-000000000001")
+DEMO_WS_ADMIN_UUID = UUID("20000001-2000-4000-8000-000000000001")
+DEMO_STEWARD_UUID = UUID("20000002-2000-4000-8000-000000000002")
+DEMO_VIEWER_UUID = UUID("20000003-2000-4000-8000-000000000003")
 
 DEMO_PASSWORD = "change-me-strong-password"
 
@@ -172,7 +172,9 @@ def main() -> int:
         cur = conn.cursor()
     except Exception as exc:
         print(f"✗  Cannot connect to database: {exc}", file=sys.stderr)
-        print("   Make sure the stack is running and migrations have been applied.", file=sys.stderr)
+        print(
+            "   Make sure the stack is running and migrations have been applied.", file=sys.stderr
+        )
         return 1
 
     try:
