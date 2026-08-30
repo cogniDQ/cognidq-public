@@ -7,10 +7,10 @@ guaranteed support SLA** for the open-source edition.
 
 | Need | Channel |
 |---|---|
-| Bug report | [GitHub Issues](https://github.com/aiexplainedhub/cognidq/issues/new?template=bug_report.md) |
-| Feature request | [GitHub Issues](https://github.com/aiexplainedhub/cognidq/issues/new?template=feature_request.md) |
-| Question / how-to | [GitHub Discussions](https://github.com/aiexplainedhub/cognidq/discussions) |
-| Documentation issue | [GitHub Issues](https://github.com/aiexplainedhub/cognidq/issues/new?template=documentation.md) |
+| Bug report | [GitHub Issues](https://github.com/cogniDQ/cognidq-public/issues/new?template=bug_report.md) |
+| Feature request | [GitHub Issues](https://github.com/cogniDQ/cognidq-public/issues/new?template=feature_request.md) |
+| Question / how-to | [GitHub Discussions](https://github.com/cogniDQ/cognidq-public/discussions) |
+| Documentation issue | [GitHub Issues](https://github.com/cogniDQ/cognidq-public/issues/new?template=documentation.md) |
 | Security vulnerability | See [SECURITY.md](SECURITY.md) — **never** post these publicly |
 
 Before opening a new issue or discussion, please:
@@ -57,7 +57,7 @@ signals shape the timeline for a commercial edition.
 ## Helping others
 
 The single most useful thing you can do for the community is **help
-answer questions** in [Discussions](https://github.com/aiexplainedhub/cognidq/discussions).
+answer questions** in [Discussions](https://github.com/cogniDQ/cognidq-public/discussions).
 If you successfully solved a tricky setup problem, write it up — the
 next person hitting the same issue will find your post.
 

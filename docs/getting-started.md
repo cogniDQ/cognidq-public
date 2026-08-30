@@ -15,8 +15,8 @@ data, in about 5 minutes.
 ## 1. Clone
 
 ```bash
-git clone https://github.com/aiexplainedhub/cognidq.git
-cd cognidq
+git clone https://github.com/cogniDQ/cognidq-public.git
+cd cognidq-public
 ```
 
 ## 2. Configure environment

@@ -124,6 +124,6 @@ For the trajectory of fixes, see [../ROADMAP.md](../ROADMAP.md).
 ---
 
 If something on this list is a blocker for you, please open a
-[GitHub issue](https://github.com/aiexplainedhub/cognidq/issues)
-or a [Discussion](https://github.com/aiexplainedhub/cognidq/discussions);
+[GitHub issue](https://github.com/cogniDQ/cognidq-public/issues)
+or a [Discussion](https://github.com/cogniDQ/cognidq-public/discussions);
 that signal is what drives the roadmap.

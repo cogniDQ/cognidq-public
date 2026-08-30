@@ -114,7 +114,7 @@ belong to the future commercial / enterprise edition described in
 
 ## How items get on the roadmap
 
-- Open a [Feature request](https://github.com/aiexplainedhub/cognidq/issues/new?template=feature_request.md).
+- Open a [Feature request](https://github.com/cogniDQ/cognidq-public/issues/new?template=feature_request.md).
 - Discuss the use case publicly.
 - Maintainers move items between milestones based on:
   1. Number of independent users asking for it.

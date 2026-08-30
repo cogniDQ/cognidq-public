@@ -60,7 +60,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest pytest-cov
+          pip install ruff==0.16.5 pytest pytest-cov
 
       - name: Generate CI test encryption keys
         run: |
@@ -140,6 +140,7 @@ jobs:
           CREDENTIAL_ENCRYPTION_KEY: ci-placeholder
           MINIO_ROOT_PASSWORD: ci-placeholder
           GF_SECURITY_ADMIN_PASSWORD: ci-placeholder
+          FLOWER_BASIC_AUTH: ci-placeholder:ci-placeholder
         run: docker compose config --quiet
 
   # ---------------------------------------------------------------

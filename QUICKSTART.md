@@ -7,15 +7,15 @@
 
 ```bash
 # 1. Clone
-git clone https://github.com/aiexplainedhub/cognidq.git
-cd cognidq
+git clone https://github.com/cogniDQ/cognidq-public.git
+cd cognidq-public
 
 # 2. Create env files
 cp .env.example .env
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 
-# 3. Edit .env — fill in these required values:
+# 3. Edit .env â€” fill in these required values:
 #    OPENAI_API_KEY            your OpenAI key (leave placeholder to skip NL features)
 #    DATASOURCE_ENCRYPTION_KEY generated Fernet key (python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())")
 #    CREDENTIAL_ENCRYPTION_KEY second generated Fernet key (different from the first)
@@ -69,7 +69,7 @@ make reset          # DESTRUCTIVE: wipe all local volumes
 **`docker compose up` exits immediately with "variable is not set"**  
 The root `.env` file is missing or incomplete. Docker Compose reads required
 variables (`OPENAI_API_KEY`, `*_ENCRYPTION_KEY`, `MINIO_ROOT_PASSWORD`,
-`GF_SECURITY_ADMIN_PASSWORD`) from `.env` in the project root — not from
+`GF_SECURITY_ADMIN_PASSWORD`) from `.env` in the project root ï¿½ not from
 `backend/.env`.
 
 **`alembic upgrade head` fails**  

@@ -103,5 +103,5 @@ narrative announcement.
 
 This release is the first public one. There is no prior public history.
 
-[Unreleased]: https://github.com/aiexplainedhub/cognidq/compare/v0.1.0-alpha...HEAD
-[0.1.0-alpha]: https://github.com/aiexplainedhub/cognidq/releases/tag/v0.1.0-alpha
+[Unreleased]: https://github.com/cogniDQ/cognidq-public/compare/v0.1.0-alpha...HEAD
+[0.1.0-alpha]: https://github.com/cogniDQ/cognidq-public/releases/tag/v0.1.0-alpha

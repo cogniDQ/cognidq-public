@@ -159,7 +159,10 @@ class RuleExecutor:
                 # Include a sample of violation rows so the check_node can forward them
                 # to SampleCaptureService for the "View faulty records" feature.
                 # Apply _json_safe to handle Decimal/UUID/datetime values in row dicts.
-                "violations": [_json_safe(r) if isinstance(r, dict) else _json_safe({"value": r}) for r in violations[:100]],
+                "violations": [
+                    _json_safe(r) if isinstance(r, dict) else _json_safe({"value": r})
+                    for r in violations[:100]
+                ],
                 "threshold_met": await self._check_thresholds(execution, rule),
                 "statistics": statistics,
             }

@@ -145,7 +145,7 @@ The seed loader creates these users (all with password
 
 > Closing line: "Apache-2.0, multi-tenant, batteries-included for the
 > demo, opinionated about what's in scope. Code at
-> github.com/aiexplainedhub/cognidq."
+> github.com/cogniDQ/cognidq-public."
 
 ---
 
