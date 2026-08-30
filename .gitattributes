@@ -1,0 +1,77 @@
+# Default: let Git handle line endings using the user's core.autocrlf
+# setting, but be explicit for files where it matters.
+
+# Shell scripts must always be LF (executed on Linux/macOS).
+*.sh         text eol=lf
+*.bash       text eol=lf
+
+# Dockerfiles run inside Linux containers.
+Dockerfile*  text eol=lf
+
+# Makefile is consumed by GNU make on Linux/macOS.
+Makefile     text eol=lf
+
+# YAML / TOML / JSON / Markdown — keep LF for cross-platform consistency.
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.toml       text eol=lf
+*.json       text eol=lf
+*.md         text eol=lf
+
+# Python source files — LF.
+*.py         text eol=lf
+
+# Pre-commit hook files.
+.pre-commit-config.yaml  text eol=lf
+
+# Windows shell scripts must be CRLF.
+*.ps1        text eol=crlf
+*.cmd        text eol=crlf
+*.bat        text eol=crlf
+
+# Mark binary so Git does not try to diff or merge.
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.svg        text
+*.pdf        binary
+*.zip        binary
+*.tar        binary
+*.tar.gz     binary
+*.parquet    binary
+*.xlsx       binary
+*.docx       binary
+
+# ---------------------------------------------------------------------
+# Publish-set exclusions: files below are internal working documents or
+# development artifacts. `git archive` (used by
+# scripts/create_public_snapshot.*) omits them from the public snapshot.
+# ---------------------------------------------------------------------
+
+# Internal audit / process documents
+/security/**                         export-ignore
+/CI_GREEN_HANDOFF.md                 export-ignore
+/INSTALL_AUDIT.md                    export-ignore
+/OSS_READINESS_AUDIT.md              export-ignore
+/docs/publishing-to-fresh-repo.md    export-ignore
+/docs/open-source-strategy.md        export-ignore
+/docs/page-scope-decisions.md        export-ignore
+/docs/page-scope-inventory.md        export-ignore
+
+# Ad-hoc QA / e2e artifacts (superseded by backend/tests and frontend tests)
+/e2e_subtypes/**                     export-ignore
+/qa/**                               export-ignore
+/tests/**                            export-ignore
+
+# Development-only scripts and runtime artifacts at backend root
+/backend/test_*.py                   export-ignore
+/backend/debug_test.py               export-ignore
+/backend/check_flow_nodes.py         export-ignore
+/backend/check_flow_results.py       export-ignore
+/backend/_check_users.py             export-ignore
+/backend/run_migration_035.py        export-ignore
+/backend/backfill_public_ds_mirror.py export-ignore
+/backend/celerybeat-schedule         export-ignore
+/backend/logs/**                     export-ignore
+/backend/spark-warehouse/**          export-ignore

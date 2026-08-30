@@ -1,0 +1,318 @@
+services:
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/dataquality_db
+      - REDIS_URL=redis://redis:6379/0
+      # BUG-014: secrets must be supplied via environment / .env (NEVER committed).
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}
+      - DATASOURCE_ENCRYPTION_KEY=${DATASOURCE_ENCRYPTION_KEY:?set DATASOURCE_ENCRYPTION_KEY in .env}
+      - CREDENTIAL_ENCRYPTION_KEY=${CREDENTIAL_ENCRYPTION_KEY:?set CREDENTIAL_ENCRYPTION_KEY in .env}
+      # Spark Configuration
+      - SPARK_ENABLED=true
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_APP_NAME=DataQuality
+      - SPARK_EXECUTOR_MEMORY=2g
+      - SPARK_EXECUTOR_CORES=2
+      - SPARK_DRIVER_MEMORY=1g
+      - SPARK_SQL_ADAPTIVE_ENABLED=true
+      # Python environment for PySpark
+      - PYSPARK_PYTHON=/usr/local/bin/python3.11
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3.11
+      # Storage Configuration
+      - STORAGE_TYPE=minio
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+      - MINIO_BUCKET=dq-data-assets
+      - MINIO_SECURE=false
+      # Flower (F6) — used by /platform/celery/* observability endpoints
+      - FLOWER_URL=${FLOWER_URL:-http://flower:5555}
+      - FLOWER_BASIC_AUTH=${FLOWER_BASIC_AUTH:?Set FLOWER_BASIC_AUTH in .env (format user:password) - see .env.example}
+    env_file:
+      - path: ./backend/.env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      spark-master:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+      - spark_jars:/opt/spark-jars
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Celery Worker
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/dataquality_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      # BUG-014: secrets supplied via environment / .env.
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}
+      - DATASOURCE_ENCRYPTION_KEY=${DATASOURCE_ENCRYPTION_KEY:?set DATASOURCE_ENCRYPTION_KEY in .env}
+      - CREDENTIAL_ENCRYPTION_KEY=${CREDENTIAL_ENCRYPTION_KEY:?set CREDENTIAL_ENCRYPTION_KEY in .env}
+      # Spark Configuration
+      - SPARK_ENABLED=true
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_APP_NAME=DataQuality
+      - SPARK_EXECUTOR_MEMORY=2g
+      - SPARK_EXECUTOR_CORES=2
+      - SPARK_DRIVER_MEMORY=1g
+      - SPARK_SQL_ADAPTIVE_ENABLED=true
+      # Storage Configuration
+      - STORAGE_TYPE=minio
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+      - MINIO_BUCKET=dq-data-assets
+      - MINIO_SECURE=false
+    env_file:
+      - path: ./backend/.env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      spark-master:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+      - spark_jars:/opt/spark-jars
+    command: celery -A app.workers.celery_app worker --loglevel=info
+
+  # Celery Beat (periodic task scheduler)
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/dataquality_db
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?set OPENAI_API_KEY in .env}
+      - DATASOURCE_ENCRYPTION_KEY=${DATASOURCE_ENCRYPTION_KEY:?set DATASOURCE_ENCRYPTION_KEY in .env}
+      - CREDENTIAL_ENCRYPTION_KEY=${CREDENTIAL_ENCRYPTION_KEY:?set CREDENTIAL_ENCRYPTION_KEY in .env}
+      - STORAGE_TYPE=minio
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+      - MINIO_BUCKET=dq-data-assets
+      - MINIO_SECURE=false
+    env_file:
+      - path: ./backend/.env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+      - backend_logs:/app/logs
+    command: celery -A app.workers.celery_app beat --loglevel=info
+
+  # Flower — Celery monitoring UI + REST API (F6)
+  flower:
+    image: mher/flower:2.0
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - FLOWER_PORT=5555
+      - FLOWER_URL_PREFIX=
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - worker
+    command: >
+      celery --broker=redis://redis:6379/0 flower
+      --port=5555
+      --basic_auth=${FLOWER_BASIC_AUTH:?Set FLOWER_BASIC_AUTH in .env (format user:password) - see .env.example}
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      # Use relative URL so requests go through Vite's dev proxy (no CORS)
+      - VITE_API_URL=
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres # gitleaks:allow
+      - POSTGRES_DB=dataquality_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dataquality_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # Spark Master
+  spark-master:
+    image: apache/spark:3.5.0-python3
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/tmp/spark-events
+    ports:
+      - "7077:7077"  # Spark Master port
+      - "8080:8080"  # Spark Master Web UI
+    volumes:
+      - spark_data:/opt/spark/work
+      - spark_jars:/opt/spark/jars-extra
+      - spark_events:/tmp/spark-events
+
+  # Spark Worker 1
+  spark-worker-1:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.spark-worker
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+      - PYSPARK_PYTHON=/usr/local/bin/python3.11
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3.11
+    depends_on:
+      - spark-master
+    volumes:
+      - spark_jars:/opt/spark/jars-extra
+      - spark_events:/tmp/spark-events
+
+  # Spark Worker 2
+  spark-worker-2:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.spark-worker
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+      - PYSPARK_PYTHON=/usr/local/bin/python3.11
+      - PYSPARK_DRIVER_PYTHON=/usr/local/bin/python3.11
+    depends_on:
+      - spark-master
+    volumes:
+      - spark_jars:/opt/spark/jars-extra
+      - spark_events:/tmp/spark-events
+
+  # Spark History Server
+  spark-history:
+    image: apache/spark:3.5.0-python3
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.history.HistoryServer
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/tmp/spark-events -Dspark.history.ui.port=18080
+    ports:
+      - "18080:18080"  # Spark History Server Web UI
+    depends_on:
+      - spark-master
+    volumes:
+      - spark_events:/tmp/spark-events
+
+  # MinIO Object Storage (S3-compatible)
+  minio:
+    image: minio/minio:latest
+    container_name: dq-minio
+    ports:
+      - "9000:9000"      # API
+      - "9001:9001"      # Console UI
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
+      MINIO_DOMAIN: minio
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # Prometheus — metrics collection
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - backend
+
+  # Grafana — metrics visualisation
+  grafana:
+    image: grafana/grafana:10.3.1
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:?set GF_SECURITY_ADMIN_PASSWORD in .env}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/dq_overview.json
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_logs:
+  spark_data:
+  spark_jars:
+  spark_events:
+  minio_data:
+  prometheus_data:
+  grafana_data:

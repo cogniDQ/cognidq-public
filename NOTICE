@@ -1,0 +1,20 @@
+CogniDQ
+Copyright 2026 The CogniDQ Authors
+
+This product includes software developed by the CogniDQ project
+(https://github.com/aiexplainedhub/cognidq).
+
+Licensed under the Apache License, Version 2.0 (the "License").
+See the LICENSE file in the project root for the full license text.
+
+---
+
+This product bundles or depends on third-party open-source software.
+Notable dependencies and their licenses are listed in:
+
+  - backend/requirements.txt          (Python dependencies)
+  - frontend/package.json             (Node dependencies)
+  - docs/licensing.md                 (summary of obligations)
+
+Users who redistribute this software must comply with the terms of all
+applicable third-party licenses.

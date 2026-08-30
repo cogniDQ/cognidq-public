@@ -1,0 +1,246 @@
+/**
+ * Timeliness Dimension Schema — 6 subtypes
+ * Registered on import.
+ */
+import { registerDimension } from './registry-store'
+import type { DimensionSchema } from './types'
+
+const schema: DimensionSchema = {
+  dimension: 'timeliness',
+  defaultSubtype: 'freshness',
+  subtypes: [
+    {
+      subtype: 'freshness',
+      label: 'Data Freshness',
+      description: 'Ensures data is not older than a maximum age',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'timestamp_column',
+          label: 'Timestamp Column',
+          helpText: 'Column containing the record timestamp',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'max_age_value',
+          label: 'Maximum Age',
+          helpText: 'Maximum allowed age of data',
+          inputType: 'duration',
+          required: true,
+          defaultValue: 24,
+          section: 'businessLogic',
+        },
+      ],
+      defaultConfig: () => ({
+        timestamp_column: '',
+        max_age_value: 24,
+        max_age_unit: 'hours',
+      }),
+    },
+    {
+      subtype: 'record_age',
+      label: 'Record Age',
+      description: 'Each record must be fresher than a specified duration',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'timestamp_column',
+          label: 'Timestamp Column',
+          helpText: 'Column with the record creation/update time',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'max_age_value',
+          label: 'Maximum Record Age',
+          helpText: 'Maximum allowed age per record',
+          inputType: 'duration',
+          required: true,
+          defaultValue: 7,
+          section: 'businessLogic',
+        },
+      ],
+      defaultConfig: () => ({
+        timestamp_column: '',
+        max_age_value: 7,
+        max_age_unit: 'days',
+      }),
+    },
+    {
+      subtype: 'latency',
+      label: 'Data Latency',
+      description: 'Measures delay between event time and load time',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'event_timestamp_column',
+          label: 'Event Timestamp Column',
+          helpText: 'Column with the original event time',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'load_timestamp_column',
+          label: 'Load Timestamp Column',
+          helpText: 'Column with the data load/ingestion time',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'max_latency_value',
+          label: 'Maximum Latency',
+          helpText: 'Maximum acceptable delay between event and load',
+          inputType: 'duration',
+          required: true,
+          defaultValue: 1,
+          section: 'businessLogic',
+        },
+      ],
+      defaultConfig: () => ({
+        event_timestamp_column: '',
+        load_timestamp_column: '',
+        max_latency_value: 1,
+        max_latency_unit: 'hours',
+      }),
+    },
+    {
+      subtype: 'processing_delay',
+      label: 'Processing Delay',
+      description: 'Measures time between processing stages',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'start_timestamp_column',
+          label: 'Start Timestamp Column',
+          helpText: 'Column marking the start of processing',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'end_timestamp_column',
+          label: 'End Timestamp Column',
+          helpText: 'Column marking the end of processing',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'max_delay_value',
+          label: 'Maximum Delay',
+          helpText: 'Maximum acceptable processing time',
+          inputType: 'duration',
+          required: true,
+          defaultValue: 30,
+          section: 'businessLogic',
+        },
+      ],
+      defaultConfig: () => ({
+        start_timestamp_column: '',
+        end_timestamp_column: '',
+        max_delay_value: 30,
+        max_delay_unit: 'minutes',
+      }),
+    },
+    {
+      subtype: 'delivery_window',
+      label: 'Delivery Window',
+      description: 'Data must arrive within a specified time window',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'delivery_window_start',
+          label: 'Window Start (HH:MM)',
+          helpText: 'Expected earliest delivery time',
+          inputType: 'time',
+          required: true,
+          defaultValue: '06:00',
+          section: 'businessLogic',
+        },
+        {
+          key: 'delivery_window_end',
+          label: 'Window End (HH:MM)',
+          helpText: 'Expected latest delivery time',
+          inputType: 'time',
+          required: true,
+          defaultValue: '09:00',
+          section: 'businessLogic',
+        },
+        {
+          key: 'timestamp_column',
+          label: 'Delivery Timestamp Column',
+          helpText: 'Column with the delivery/arrival timestamp',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+      ],
+      defaultConfig: () => ({
+        delivery_window_start: '06:00',
+        delivery_window_end: '09:00',
+        timestamp_column: '',
+      }),
+    },
+    {
+      subtype: 'heartbeat',
+      label: 'Heartbeat Monitor',
+      description: 'Expects data at a regular frequency (e.g., hourly batches)',
+      requiresReferenceData: false,
+      fields: [
+        {
+          key: 'timestamp_column',
+          label: 'Timestamp Column',
+          helpText: 'Column containing the arrival/event timestamp',
+          inputType: 'column-picker',
+          required: true,
+          defaultValue: '',
+          section: 'businessLogic',
+        },
+        {
+          key: 'expected_frequency_value',
+          label: 'Expected Frequency',
+          helpText: 'How often data is expected to arrive',
+          inputType: 'duration',
+          required: true,
+          defaultValue: 1,
+          section: 'businessLogic',
+        },
+
+        {
+          key: 'metric_type',
+          label: 'Metric Type',
+          helpText: 'What to measure for heartbeat detection',
+          inputType: 'dropdown',
+          required: true,
+          defaultValue: 'row_count',
+          section: 'businessLogic',
+          options: [
+            { value: 'row_count', label: 'Row Count' },
+            { value: 'timestamp', label: 'Latest Timestamp' },
+            { value: 'file_arrival', label: 'File Arrival' },
+          ],
+        },
+      ],
+      defaultConfig: () => ({
+        timestamp_column: '',
+        expected_frequency_value: 1,
+        expected_frequency_unit: 'hours',
+        metric_type: 'row_count',
+      }),
+    },
+  ],
+}
+
+registerDimension(schema)

@@ -1,0 +1,13 @@
+{
+  "name": "products.price >= 0",
+  "description": "A product price must be non-negative. Negative prices break invoicing.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "range",
+  "config": {
+    "column": "price",
+    "min": 0
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["products", "range"]
+}

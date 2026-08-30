@@ -1,0 +1,11 @@
+customer_id,name,email,age,city,total_spent,avg_order_value,orders_count,is_premium,registration_date
+1001,Alice Johnson,alice.j@example.com,28,New York,2450.50,122.53,20,true,2023-01-15
+1002,Bob Smith,bob.smith@example.com,35,San Francisco,5680.25,189.34,30,true,2023-02-20
+1003,Charlie Brown,charlie.b@example.com,42,Chicago,1250.00,125.00,10,false,2023-03-10
+1004,Diana Prince,diana.p@example.com,31,Los Angeles,8920.75,223.02,40,true,2023-01-25
+1005,Eve Adams,eve.adams@example.com,,Boston,3340.20,167.01,20,false,2023-04-05
+1006,Frank Miller,frank.m@example.com,29,Seattle,4567.80,152.26,30,true,2023-02-14
+1007,Grace Lee,grace.lee@example.com,38,Austin,2890.40,144.52,20,false,2023-03-22
+1008,Henry Clark,,45,Denver,6234.90,207.83,30,true,2023-01-30
+1009,Iris Wang,iris.wang@example.com,33,Portland,1567.25,156.73,10,false,2023-05-12
+1010,Jack Wilson,jack.w@example.com,27,Miami,7845.60,196.14,40,true,2023-02-08

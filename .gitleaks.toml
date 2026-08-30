@@ -1,0 +1,39 @@
+# gitleaks configuration
+# https://github.com/gitleaks/gitleaks#configuration
+
+title = "cogniDQ gitleaks config"
+
+[extend]
+# Extend the default ruleset
+useDefault = true
+
+[allowlist]
+description = "Project-wide allowlist"
+# Suppress findings from the specific historical commit that previously held
+# test-fixture keys (ZmDfcTF7... Fernet key, ci-test-jwt placeholder).
+# Those values have been removed in subsequent commits.
+commits = [
+    "202cfb002e1cf4814aaa4c390b48b5a7c2ee7c32",
+]
+# Exclude files that intentionally document or reference secrets for audit/test purposes
+paths = [
+    # Security audit documentation — documents historic findings, not active secrets
+    '''security/secret-scan-report\.md''',
+    '''security/git-history-cleanup\.md''',
+
+    # Local-dev test credential documentation
+    '''TEST_CREDENTIALS\.md''',
+    '''TEST_DATASOURCE_CREDENTIALS\.md''',
+
+    # CI handoff docs that contain only dynamic key generation commands
+    '''CI_GREEN_HANDOFF\.md''',
+
+    # package-lock.json / lockfiles contain sha512 integrity hashes that
+    # look like base64-encoded keys but are package checksums
+    '''frontend/package-lock\.json''',
+    '''package-lock\.json''',
+    '''yarn\.lock''',
+
+    # Makefile key-generation helpers (they generate keys, don't store them)
+    '''Makefile''',
+]

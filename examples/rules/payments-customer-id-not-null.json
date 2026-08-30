@@ -1,0 +1,12 @@
+{
+  "name": "payments.customer_id is not null",
+  "description": "Every payment must reference a customer; a null customer breaks reconciliation.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "completeness",
+  "config": {
+    "column": "customer_id"
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["payments", "completeness"]
+}

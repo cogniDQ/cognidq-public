@@ -1,0 +1,14 @@
+{
+  "name": "payments.amount > 0",
+  "description": "Positive payment amounts only. Refunds belong to a separate refunds dataset, not here.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "comparison",
+  "config": {
+    "column": "amount",
+    "operator": ">",
+    "value": 0
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["payments", "comparison"]
+}

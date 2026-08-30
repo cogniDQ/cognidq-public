@@ -1,0 +1,46 @@
+groups:
+  - name: dq-backend
+    interval: 30s
+    rules:
+      - alert: DataSourceCreateErrorRateHigh
+        expr: |
+          rate(data_source_create_count_total{result="error"}[5m])
+          / (rate(data_source_create_count_total[5m]) + 1) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          feature: F004
+        annotations:
+          summary: "High data source creation error rate"
+          description: "More than 10% of data source creation attempts are failing (workspace={{ $labels.workspace_id }})."
+
+      - alert: DatasetCreateErrorRateHigh
+        expr: |
+          rate(dataset_create_count_total{result="error"}[5m])
+          / (rate(dataset_create_count_total[5m]) + 1) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          feature: F005
+        annotations:
+          summary: "High dataset creation error rate"
+          description: "More than 10% of dataset creation attempts are failing (workspace={{ $labels.workspace_id }})."
+
+      - alert: PermissionAuditQuerySlow
+        expr: histogram_quantile(0.95, rate(permission_audit_query_duration_ms_bucket[5m])) > 2000
+        for: 5m
+        labels:
+          severity: warning
+          feature: F008
+        annotations:
+          summary: "Permission audit queries are slow"
+          description: "95th percentile query latency exceeds 2 s (endpoint={{ $labels.endpoint }})."
+
+      - alert: BackendDown
+        expr: up{job="dq-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "DQ backend is unreachable"
+          description: "Prometheus cannot scrape the backend /metrics endpoint."

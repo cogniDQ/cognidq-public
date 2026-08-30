@@ -1,0 +1,11 @@
+Business Term,Technical Column,Data Type,Domain,Description,Synonyms,Mandatory,Owner,Allowed Values
+Customer Email,customer_email,string,Customer,"Primary customer email used for identity and notifications","email,primary email,customer mail",Yes,Data Governance, 
+Customer Status,customer_status,string,Customer,"Lifecycle status of customer account","account status,user status,client status",Yes,Data Governance,"ACTIVE,INACTIVE,SUSPENDED"
+Order Amount,order_amount,decimal,Finance,"Order line-level financial amount before taxes","amount,order value,line amount",Yes,Finance Operations,
+Total Amount,total_amount,decimal,Finance,"Total payable amount after discounts and adjustments","total,invoice total,gross amount",Yes,Finance Operations,
+Shipping Date,shipping_date,date,Operations,"Date when order is shipped from warehouse","ship date,dispatch date,shipment date",No,Supply Chain,
+Order Date,order_date,date,Operations,"Date when order was placed by customer","purchase date,booking date,ordered on",Yes,Supply Chain,
+Invoice Amount,invoice_amount,decimal,Finance,"Invoice-issued amount for billing","billing amount,invoice total,billed value",Yes,Finance Operations,
+Payment Status,payment_status,string,Finance,"Settlement state for an invoice","paid state,settlement status,payment state",No,Finance Operations,"PAID,PENDING,FAILED"
+Country Code,country_code,string,Customer,"ISO country code associated with customer profile","country,region code,national code",No,Data Governance,
+Lifetime Value,total_lifetime_value,decimal,Customer,"Cumulative customer value across orders","ltv,customer value,total value",No,Growth Analytics,

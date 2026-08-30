@@ -1,0 +1,27 @@
+customer_id,full_name,email,age,country,account_status,credit_limit,signup_date
+C001,Alice Dubois,alice.dubois@example.com,34,France,active,5000.00,2023-03-15
+C002,Bob Tanaka,bob.tanaka@example.com,28,Japan,active,3500.00,2023-05-20
+C003,Carlos Rivera,carlos.rivera@example.com,45,Mexico,active,7000.00,2022-11-01
+C004,,invalid-email-format,17,Germany,active,1500.00,2024-01-10
+C005,Eva Müller,eva.mueller@example.com,31,Germany,active,4000.00,2023-07-22
+C006,Frank Osei,frank.osei@example.com,29,Ghana,suspended,2000.00,2023-09-05
+C007,Grace Kim,grace.kim@example.com,52,South Korea,active,8500.00,2022-06-14
+C008,Hana Sato,,38,Japan,active,4500.00,2023-12-01
+C009,Ivan Petrov,ivan.petrov@example.com,-5,Russia,active,3000.00,2024-02-28
+C010,Julia Santos,julia.santos@example.com,26,Brazil,active,2500.00,2023-04-17
+C001,Alice Dubois,alice.dubois@example.com,34,France,active,5000.00,2023-03-15
+C011,Kevin Okafor,kevin@,41,Nigeria,unknown,1000.00,2023-10-30
+C012,Lisa Zhang,lisa.zhang@example.com,35,China,active,6000.00,2022-08-19
+C013,Marco Bianchi,marco.bianchi@example.com,999,Italy,active,5500.00,2023-01-07
+C014,Nina Kowalski,nina.kowalski@example.com,30,Poland,active,4800.00,2023-11-23
+C015,Omar Farouq,omar.farouq@example.com,44,Egypt,active,-200.00,2022-12-05
+C016,Paula Mendes,paula.mendes@example.com,27,Brazil,active,3200.00,2024-03-11
+C017,Ravi Sharma,,33,India,active,4100.00,
+C018,Sofia Andersen,sofia.andersen@example.com,39,Denmark,active,5900.00,2023-06-28
+C019,Tao Li,tao.li@example.com,22,China,active,2800.00,2024-04-02
+C020,Uma Obi,uma.obi@example.com,47,Nigeria,suspended,6200.00,2022-10-15
+C021,,,,,,, 
+C022,Victor Reyes,victor.reyes@example.com,31,Mexico,active,3700.00,2023-08-09
+C023,Wendy Chan,wendy.chan@example.com,29,Hong Kong,active,4300.00,2023-09-14
+C024,Xian Wu,xian.wu@example.com,55,China,active,9000.00,2021-12-20
+C025,Yuki Tanaka,yuki.tanaka@example.com,36,Japan,active,5100.00,2023-02-18

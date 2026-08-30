@@ -1,0 +1,13 @@
+{
+  "name": "orders.amount is non-negative",
+  "description": "Orders cannot have a negative amount. A negative amount usually means refund logic was misclassified as an order.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "range",
+  "config": {
+    "column": "amount",
+    "min": 0
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["orders", "range"]
+}

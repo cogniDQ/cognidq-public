@@ -1,0 +1,13 @@
+{
+  "name": "customers.email is valid",
+  "description": "Where present, email must parse as a valid address. Pairs with the not-null rule.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "validity",
+  "config": {
+    "column": "email",
+    "validator": "email"
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "medium",
+  "labels": ["customers", "validity"]
+}

@@ -1,0 +1,252 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ── Semantic theme tokens ────────────────────────────────────────────
+     Variables are R G B triplets (no commas, no rgb() wrapper) so they
+     compose with Tailwind's `<alpha-value>` shorthand. */
+  :root {
+    /* Light theme (default) */
+    --color-surface: 255 255 255;
+    --color-surface-raised: 249 250 251;
+    --color-surface-overlay: 255 255 255;
+    --color-surface-inverse: 17 24 39;
+    --color-content: 17 24 39;
+    --color-content-muted: 75 85 99;
+    --color-content-subtle: 156 163 175;
+    --color-content-inverse: 249 250 251;
+    --color-edge: 229 231 235;
+    --color-edge-strong: 209 213 219;
+    --color-edge-subtle: 243 244 246;
+    --color-brand: 132 94 194;
+    --color-brand-hover: 112 68 179;
+    --color-brand-soft: 243 238 255;
+    --color-success: 16 185 129;
+    --color-success-soft: 209 250 229;
+    --color-warning: 217 119 6;
+    --color-warning-soft: 254 243 199;
+    --color-danger: 220 38 38;
+    --color-danger-soft: 254 226 226;
+    --color-info: 37 99 235;
+    --color-info-soft: 219 234 254;
+
+    /* Legacy `dark.*` palette — inverted for light mode so existing
+       hardcoded utilities (bg-dark-900, border-dark-700, ...) become
+       light surfaces. Variables are R G B triplets. */
+    --dark-50: 38 38 38;
+    --dark-100: 31 31 31;
+    --dark-200: 38 38 38;
+    --dark-300: 67 67 67;
+    --dark-400: 89 89 89;
+    --dark-500: 140 140 140;
+    --dark-600: 191 191 191;
+    --dark-700: 217 217 217;
+    --dark-800: 232 232 232;
+    --dark-900: 245 245 245;
+    --dark-950: 250 250 250;
+
+    /* Legacy `gray.*` palette — inverted for light mode so
+       `bg-gray-800` becomes a light surface and `text-gray-100/200`
+       becomes dark text. Variables are R G B triplets. */
+    --gray-50: 17 24 39;
+    --gray-100: 31 41 55;
+    --gray-200: 55 65 81;
+    --gray-300: 55 65 81;
+    --gray-400: 75 85 99;
+    --gray-500: 75 85 99;
+    --gray-600: 209 213 219;
+    --gray-700: 229 231 235;
+    --gray-800: 243 244 246;
+    --gray-900: 249 250 251;
+  }
+
+  .dark {
+    /* Dark theme (current product look) */
+    --color-surface: 20 20 20;
+    --color-surface-raised: 31 31 31;
+    --color-surface-overlay: 38 38 38;
+    --color-surface-inverse: 250 250 250;
+    --color-content: 243 244 246;
+    --color-content-muted: 156 163 175;
+    --color-content-subtle: 107 114 128;
+    --color-content-inverse: 17 24 39;
+    --color-edge: 38 38 38;
+    --color-edge-strong: 67 67 67;
+    --color-edge-subtle: 31 31 31;
+    --color-brand: 157 112 255;
+    --color-brand-hover: 187 158 255;
+    --color-brand-soft: 58 34 96;
+    --color-success: 52 211 153;
+    --color-success-soft: 6 78 59;
+    --color-warning: 251 191 36;
+    --color-warning-soft: 113 63 18;
+    --color-danger: 248 113 113;
+    --color-danger-soft: 127 29 29;
+    --color-info: 96 165 250;
+    --color-info-soft: 30 58 138;
+
+    /* Legacy `dark.*` palette — original (current product look). */
+    --dark-50: 250 250 250;
+    --dark-100: 245 245 245;
+    --dark-200: 232 232 232;
+    --dark-300: 217 217 217;
+    --dark-400: 191 191 191;
+    --dark-500: 140 140 140;
+    --dark-600: 89 89 89;
+    --dark-700: 67 67 67;
+    --dark-800: 38 38 38;
+    --dark-900: 31 31 31;
+    --dark-950: 20 20 20;
+
+    /* Legacy `gray.*` palette — Tailwind defaults. */
+    --gray-50: 249 250 251;
+    --gray-100: 243 244 246;
+    --gray-200: 229 231 235;
+    --gray-300: 209 213 219;
+    --gray-400: 156 163 175;
+    --gray-500: 107 114 128;
+    --gray-600: 75 85 99;
+    --gray-700: 55 65 81;
+    --gray-800: 31 41 55;
+    --gray-900: 17 24 39;
+  }
+
+  body {
+    @apply bg-surface text-content;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-6 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm;
+  }
+
+  .btn-primary {
+    @apply bg-brand text-white hover:bg-brand-hover hover:shadow-lg hover:shadow-brand/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-raised text-content border border-edge-strong hover:bg-surface-overlay;
+  }
+
+  .card {
+    @apply bg-surface-raised rounded-xl shadow-lg border border-edge p-6 backdrop-blur-sm text-content;
+  }
+
+  .card-hover {
+    @apply card hover:border-edge-strong hover:shadow-xl transition-all duration-200;
+  }
+
+  .input {
+    @apply w-full px-4 py-2.5 bg-surface border border-edge-strong rounded-lg text-content placeholder:text-content-subtle focus:ring-2 focus:ring-brand focus:border-brand outline-none transition-all;
+  }
+
+  /* Ensure <select> dropdown options are readable on both themes. */
+  select.input option,
+  select option {
+    @apply bg-surface text-content;
+  }
+
+  .textarea {
+    @apply w-full px-4 py-3 bg-surface border border-edge-strong rounded-lg text-content placeholder:text-content-subtle focus:ring-2 focus:ring-brand focus:border-brand outline-none resize-none transition-all;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand to-info;
+  }
+
+  .glass {
+    @apply bg-surface-raised/70 backdrop-blur-md border border-edge/60;
+  }
+}
+
+/* ── Light-mode legibility patch ────────────────────────────────────────
+   Many legacy components hardcode `text-white` which is meant to read on
+   the dark product look but becomes invisible on the light surfaces the
+   theme variables produce. In light mode we remap `text-white` to the
+   semantic dark content color, EXCEPT when it appears inside an element
+   whose background is intentionally colored (gradient pills, brand
+   badges, status chips, etc.) where white must stay white. */
+@layer utilities {
+  html:not(.dark) .text-white {
+    color: rgb(var(--color-content));
+  }
+
+  /* Restore white inside elements that carry an explicit saturated
+     background. Using attribute substring selectors keeps this rule
+     framework-agnostic (works for Tailwind utility class names). */
+  html:not(.dark) [class*="bg-gradient"] .text-white,
+  html:not(.dark) [class*="bg-gradient"].text-white,
+  html:not(.dark) [class*="bg-blue-"] .text-white,
+  html:not(.dark) [class*="bg-blue-"].text-white,
+  html:not(.dark) [class*="bg-sky-"] .text-white,
+  html:not(.dark) [class*="bg-sky-"].text-white,
+  html:not(.dark) [class*="bg-cyan-"] .text-white,
+  html:not(.dark) [class*="bg-cyan-"].text-white,
+  html:not(.dark) [class*="bg-teal-"] .text-white,
+  html:not(.dark) [class*="bg-teal-"].text-white,
+  html:not(.dark) [class*="bg-emerald-"] .text-white,
+  html:not(.dark) [class*="bg-emerald-"].text-white,
+  html:not(.dark) [class*="bg-green-"] .text-white,
+  html:not(.dark) [class*="bg-green-"].text-white,
+  html:not(.dark) [class*="bg-lime-"] .text-white,
+  html:not(.dark) [class*="bg-lime-"].text-white,
+  html:not(.dark) [class*="bg-yellow-"] .text-white,
+  html:not(.dark) [class*="bg-yellow-"].text-white,
+  html:not(.dark) [class*="bg-amber-"] .text-white,
+  html:not(.dark) [class*="bg-amber-"].text-white,
+  html:not(.dark) [class*="bg-orange-"] .text-white,
+  html:not(.dark) [class*="bg-orange-"].text-white,
+  html:not(.dark) [class*="bg-red-"] .text-white,
+  html:not(.dark) [class*="bg-red-"].text-white,
+  html:not(.dark) [class*="bg-rose-"] .text-white,
+  html:not(.dark) [class*="bg-rose-"].text-white,
+  html:not(.dark) [class*="bg-pink-"] .text-white,
+  html:not(.dark) [class*="bg-pink-"].text-white,
+  html:not(.dark) [class*="bg-fuchsia-"] .text-white,
+  html:not(.dark) [class*="bg-fuchsia-"].text-white,
+  html:not(.dark) [class*="bg-purple-"] .text-white,
+  html:not(.dark) [class*="bg-purple-"].text-white,
+  html:not(.dark) [class*="bg-violet-"] .text-white,
+  html:not(.dark) [class*="bg-violet-"].text-white,
+  html:not(.dark) [class*="bg-indigo-"] .text-white,
+  html:not(.dark) [class*="bg-indigo-"].text-white,
+  html:not(.dark) [class*="bg-primary-"] .text-white,
+  html:not(.dark) [class*="bg-primary-"].text-white,
+  html:not(.dark) [class*="bg-secondary-"] .text-white,
+  html:not(.dark) [class*="bg-secondary-"].text-white,
+  html:not(.dark) .bg-brand .text-white,
+  html:not(.dark) .bg-brand.text-white,
+  html:not(.dark) [class*="bg-brand-"]:not([class*="bg-brand-soft"]) .text-white,
+  html:not(.dark) [class*="bg-brand-"]:not([class*="bg-brand-soft"]).text-white,
+  html:not(.dark) .bg-success .text-white,
+  html:not(.dark) .bg-success.text-white,
+  html:not(.dark) .bg-warning .text-white,
+  html:not(.dark) .bg-warning.text-white,
+  html:not(.dark) .bg-danger .text-white,
+  html:not(.dark) .bg-danger.text-white,
+  html:not(.dark) .bg-info .text-white,
+  html:not(.dark) .bg-info.text-white,
+  html:not(.dark) .bg-black .text-white,
+  html:not(.dark) .bg-black.text-white,
+  html:not(.dark) [class*="bg-neutral-"] .text-white,
+  html:not(.dark) [class*="bg-zinc-"] .text-white,
+  html:not(.dark) [class*="bg-stone-"] .text-white,
+  html:not(.dark) [class*="bg-slate-"] .text-white {
+    color: #ffffff;
+  }
+
+  /* Keep SVG icons sitting directly on saturated backgrounds white. */
+  html:not(.dark) [class*="bg-gradient"] > svg.text-white,
+  html:not(.dark) [class*="bg-blue-"] > svg.text-white,
+  html:not(.dark) [class*="bg-purple-"] > svg.text-white,
+  html:not(.dark) [class*="bg-green-"] > svg.text-white,
+  html:not(.dark) [class*="bg-orange-"] > svg.text-white,
+  html:not(.dark) [class*="bg-red-"] > svg.text-white,
+  html:not(.dark) [class*="bg-emerald-"] > svg.text-white,
+  html:not(.dark) [class*="bg-primary-"] > svg.text-white {
+    color: #ffffff;
+  }
+}

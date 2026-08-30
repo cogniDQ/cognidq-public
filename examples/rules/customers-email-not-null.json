@@ -1,0 +1,13 @@
+{
+  "name": "customers.email is not null",
+  "description": "Every customer row must have a non-null, non-empty email.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "completeness",
+  "config": {
+    "column": "email",
+    "treat_empty_string_as_null": true
+  },
+  "threshold": { "operator": "gte", "score": 0.99 },
+  "severity": "medium",
+  "labels": ["customers", "completeness"]
+}

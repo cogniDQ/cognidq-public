@@ -1,0 +1,14 @@
+{
+  "name": "customers.country in supported list",
+  "description": "Country codes must be ISO-3166 alpha-2 and within the markets we support.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "accepted_values",
+  "config": {
+    "column": "country",
+    "values": ["US", "UK", "FR", "DE", "IT", "ES"],
+    "case_sensitive": false
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "medium",
+  "labels": ["customers", "accepted_values"]
+}

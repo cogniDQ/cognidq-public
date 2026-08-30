@@ -1,0 +1,17 @@
+# Use the official Spark image — already has Java, Spark binaries, and Python 3.
+# This replaces the previous approach of downloading Spark via wget at build time.
+FROM apache/spark:3.5.0-python3
+
+USER root
+
+# Install PySpark-compatible Python packages that the worker-side UDFs may need.
+RUN pip install --no-cache-dir pyspark==3.5.0 pyarrow pandas numpy
+
+# Ensure Spark finds the correct Python interpreter.
+ENV PYSPARK_PYTHON=/usr/bin/python3
+ENV PYSPARK_DRIVER_PYTHON=/usr/bin/python3
+
+# Revert to the unprivileged spark user for the worker process.
+USER spark
+WORKDIR /opt/spark/work
+

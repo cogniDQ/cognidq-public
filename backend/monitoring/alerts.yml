@@ -1,0 +1,146 @@
+# F001 — Tenant Creation and Lifecycle — Alert Rules  (TDD §8.3 / Packet 9)
+#
+# Format: Prometheus AlertManager v2 (YAML)
+# Threshold values are configurable via environment variables.
+# All duration / count thresholds have documented defaults.
+#
+# Environment variables (with defaults shown in brackets):
+#   ALERT_INTERNAL_ERROR_THRESHOLD     [5]   — max internal errors before firing
+#   ALERT_STATUS_CHANGE_ZERO_DURATION  [10m] — silence window for status-change counter
+#   ALERT_SLA_BREACH_THRESHOLD         [1]   — any SLA breach fires immediately
+#   ALERT_NOTIFICATION_TARGET          [ops-team] — receiver name in AlertManager
+#
+# To apply:
+#   1. Mount this file in your Prometheus config directory.
+#   2. Add `rule_files: ["/etc/prometheus/alerts/f001_alerts.yml"]` to
+#      prometheus.yml.
+#   3. Reload Prometheus: `curl -X POST http://localhost:9090/-/reload`
+
+groups:
+  - name: f001_tenant_lifecycle
+    interval: 1m  # Evaluation interval for this group
+
+    rules:
+
+      # -------------------------------------------------------------------
+      # Alert 1 — Internal errors during tenant creation
+      #
+      # Fires when the 5-minute rate of tenant_create_failure_count for
+      # failure_reason="internal_error" exceeds ALERT_INTERNAL_ERROR_THRESHOLD.
+      # Internal errors indicate unexpected DB failures, audit log write
+      # failures, or unhandled exceptions — all of which cause transaction
+      # rollbacks.  This alert fires before a sustained outage is noticed
+      # in other monitors.
+      #
+      # Default threshold: 5 errors in 5 minutes.
+      # Override:  set ALERT_INTERNAL_ERROR_THRESHOLD in the environment and
+      # regenerate / template this file before deployment.
+      # -------------------------------------------------------------------
+      - alert: TenantCreateInternalErrorRateHigh
+        expr: |
+          increase(
+            tenant_create_failure_count{failure_reason="internal_error"}[5m]
+          ) > 5
+        for: 1m
+        labels:
+          severity: critical
+          feature: f001
+          team: platform-engineering
+        annotations:
+          summary: "High rate of internal errors during tenant creation"
+          description: >
+            tenant_create_failure_count{failure_reason="internal_error"} has exceeded
+            the threshold ({{ $value }} errors in the last 5 minutes).
+            Possible causes: DB connectivity failures, audit log write failures,
+            unhandled service-layer exceptions.
+          runbook: "https://wiki.internal/runbooks/f001/internal-error-alert"
+          threshold: "5 errors / 5 minutes (configurable: ALERT_INTERNAL_ERROR_THRESHOLD)"
+
+      # -------------------------------------------------------------------
+      # Alert 2 — Tenant status change counter drops to zero
+      #
+      # Fires when tenant_status_change_count has not incremented for an
+      # extended period during business hours.  A sustained zero rate may
+      # indicate service unavailability, a broken outbox poller, or a
+      # deployment regression that silently suppresses status transitions.
+      #
+      # Default window: 10 minutes with no increments.
+      # Override: set ALERT_STATUS_CHANGE_ZERO_DURATION.
+      # -------------------------------------------------------------------
+      - alert: TenantStatusChangeCountZero
+        expr: |
+          increase(tenant_status_change_count[10m]) == 0
+        for: 10m
+        labels:
+          severity: warning
+          feature: f001
+          team: platform-engineering
+        annotations:
+          summary: "No tenant status changes recorded in the last 10 minutes"
+          description: >
+            tenant_status_change_count has not incremented for 10+ minutes.
+            This may indicate service unavailability or a silent regression
+            in the status-change flow.
+          runbook: "https://wiki.internal/runbooks/f001/status-change-zero"
+          threshold: "0 increments / 10 minutes (configurable: ALERT_STATUS_CHANGE_ZERO_DURATION)"
+
+      # -------------------------------------------------------------------
+      # Alert 3 — Audit log write failures
+      #
+      # Audit log writes occur inside the same DB transaction as every
+      # mutating operation.  A write failure causes a transaction rollback,
+      # which manifests as an "internal_error" in the create/status/update
+      # failure counters.  This alert is a dedicated view of internal_error
+      # failures across all F001 operation types to surface audit-specific
+      # failures early.
+      #
+      # Condition: sum of internal_error across all F001 failure counters
+      # exceeds the threshold in a 5-minute window.
+      # -------------------------------------------------------------------
+      - alert: TenantAuditLogWriteFailures
+        expr: |
+          (
+            increase(tenant_create_failure_count{failure_reason="internal_error"}[5m])
+          ) > 3
+        for: 2m
+        labels:
+          severity: critical
+          feature: f001
+          team: platform-engineering
+        annotations:
+          summary: "Potential audit log write failures detected"
+          description: >
+            internal_error failures in F001 creation flow have exceeded the
+            threshold ({{ $value }} in the last 5 minutes).  Audit log write
+            failures cause transaction rollbacks — no tenant record is
+            persisted without a corresponding audit entry.
+          runbook: "https://wiki.internal/runbooks/f001/audit-log-failure"
+          threshold: "3 errors / 5 minutes"
+
+      # -------------------------------------------------------------------
+      # Alert 4 — Session invalidation SLA breach
+      #
+      # The TenantSuspendedEvent must be delivered to the Session Management
+      # System within 30 seconds.  Any breach fires this alert immediately
+      # (threshold = 1).  A breach means Customer Actor sessions for a
+      # suspended tenant remain active past the contractual 30-second SLA.
+      #
+      # Default threshold: 1 breach triggers immediate alert.
+      # Override: set ALERT_SLA_BREACH_THRESHOLD.
+      # -------------------------------------------------------------------
+      - alert: SessionInvalidationSLABreach
+        expr: |
+          increase(session_invalidation_sla_breach_count[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+          feature: f001
+          team: platform-engineering
+        annotations:
+          summary: "Session invalidation SLA breached for suspended tenant"
+          description: >
+            session_invalidation_sla_breach_count has incremented
+            (tenant_id={{ $labels.tenant_id }}).  A suspended tenant's Customer
+            Actor sessions are still active past the 30-second SLA.
+          runbook: "https://wiki.internal/runbooks/f001/sla-breach"
+          threshold: "Any breach fires immediately (configurable: ALERT_SLA_BREACH_THRESHOLD)"

@@ -1,0 +1,15 @@
+{
+  "name": "orders.shipped_at >= ordered_at",
+  "description": "An order cannot ship before it is placed. A violation means a clock skew or a bad event ordering upstream.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "consistency",
+  "config": {
+    "left": "shipped_at",
+    "right": "ordered_at",
+    "operator": ">=",
+    "null_policy": "ignore"
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["orders", "consistency"]
+}

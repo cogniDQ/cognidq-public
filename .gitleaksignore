@@ -1,0 +1,16 @@
+# .gitleaksignore
+# Allowlist for gitleaks false-positives.
+# Each line is a SHA256 fingerprint of a specific finding to suppress.
+#
+# Intentional documentation suppressions:
+# - security/secret-scan-report.md:  documents previously found secrets for audit purposes
+# - security/git-history-cleanup.md: lists historic leaked values for cleanup tracking
+# - TEST_CREDENTIALS.md:             local-dev test credentials document (not for prod)
+#
+# To add a new fingerprint, run:
+#   gitleaks detect --report-format json --report-path report.json
+# then copy the "Fingerprint" field from the relevant finding.
+#
+# Suppressions for legacy doc references (security audit report + history cleanup guide)
+# These files exist solely to document what was found and remediated.
+# Format: <fingerprint>

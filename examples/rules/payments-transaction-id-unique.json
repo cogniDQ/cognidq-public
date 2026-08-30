@@ -1,0 +1,13 @@
+{
+  "name": "payments.transaction_id is unique",
+  "description": "Transaction ids must be globally unique. Duplicates indicate replay or a broken idempotency key.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "uniqueness",
+  "config": {
+    "columns": ["transaction_id"],
+    "ignore_nulls": true
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "critical",
+  "labels": ["payments", "uniqueness"]
+}

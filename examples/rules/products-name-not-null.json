@@ -1,0 +1,14 @@
+{
+  "name": "products.name is not null",
+  "description": "Every product needs a display name.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "completeness",
+  "config": {
+    "column": "name",
+    "treat_empty_string_as_null": true,
+    "treat_whitespace_as_null": true
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "medium",
+  "labels": ["products", "completeness"]
+}

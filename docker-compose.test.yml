@@ -1,0 +1,73 @@
+# docker-compose.test.yml — Connector integration test databases.
+#
+# These services are NOT part of the default stack. Start them only
+# when you need to run connector integration tests.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.test.yml up dq-testdb dq-mysql dq-mssql dq-oracle -d
+#
+# Or with the Makefile shortcut:
+#   make test-dbs        # start test databases
+#   make test-dbs-down   # stop and remove test database containers
+#
+# Credentials are documented in TEST_DATASOURCE_CREDENTIALS.md.
+
+services:
+  # Test PostgreSQL Database
+  dq-testdb:
+    image: postgres:15-alpine
+    container_name: dq-testdb
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpassword # gitleaks:allow
+      - POSTGRES_DB=dq_test
+    ports:
+      - "5435:5432"
+    volumes:
+      - testdb_data:/var/lib/postgresql/data
+
+  # Test MySQL Database
+  dq-mysql:
+    image: mysql:8.0
+    container_name: dq-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # gitleaks:allow
+      MYSQL_DATABASE: dq_test
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword # gitleaks:allow
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+
+  # Test SQL Server Database
+  dq-mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dq-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Test@1234" # gitleaks:allow
+      MSSQL_PID: Express
+    ports:
+      - "1434:1433"
+    volumes:
+      - mssql_test_data:/var/opt/mssql
+
+  # Test Oracle XE Database
+  dq-oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: dq-oracle
+    environment:
+      ORACLE_PASSWORD: testpassword # gitleaks:allow
+      APP_USER: testuser
+      APP_USER_PASSWORD: testpassword # gitleaks:allow
+    ports:
+      - "1522:1521"
+    volumes:
+      - oracle_test_data:/opt/oracle/oradata
+
+volumes:
+  testdb_data:
+  mysql_test_data:
+  mssql_test_data:
+  oracle_test_data:

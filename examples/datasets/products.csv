@@ -1,0 +1,13 @@
+id,name,price,category,active
+p-001,Standard widget,49.99,widgets,true
+p-002,Mini widget,15.50,widgets,true
+p-003,Premium widget,120.00,widgets,true
+p-004,Industrial widget,250.00,widgets,true
+p-005,Refill pack,75.00,accessories,true
+p-006,Sticker sheet,18.00,accessories,true
+p-007,Keychain,9.99,accessories,true
+p-008,Cable kit,32.00,accessories,true
+p-009,,55.00,widgets,true
+p-010,Discontinued widget,29.99,widgets,false
+p-011,Sample box,0.00,accessories,true
+p-012,Returned product,-12.50,widgets,false

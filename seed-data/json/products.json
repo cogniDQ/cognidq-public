@@ -1,0 +1,242 @@
+[
+  {
+    "product_id": 1,
+    "sku": "SKU-0001",
+    "name": "Product 001",
+    "category": "outdoor",
+    "unit_price": 132.98,
+    "in_stock": 12
+  },
+  {
+    "product_id": 2,
+    "sku": "SKU-0002",
+    "name": "Product 002",
+    "category": "apparel",
+    "unit_price": 362.68,
+    "in_stock": 8
+  },
+  {
+    "product_id": 3,
+    "sku": "SKU-0003",
+    "name": "Product 003",
+    "category": "books",
+    "unit_price": 48.46,
+    "in_stock": 143
+  },
+  {
+    "product_id": 4,
+    "sku": "SKU-0004",
+    "name": "Product 004",
+    "category": "outdoor",
+    "unit_price": 92.43,
+    "in_stock": 61
+  },
+  {
+    "product_id": 5,
+    "sku": "SKU-0005",
+    "name": "Product 005",
+    "category": "outdoor",
+    "unit_price": 444.87,
+    "in_stock": 113
+  },
+  {
+    "product_id": 6,
+    "sku": "SKU-0006",
+    "name": "Product 006",
+    "category": "apparel",
+    "unit_price": 44.7,
+    "in_stock": 245
+  },
+  {
+    "product_id": 7,
+    "sku": "SKU-0007",
+    "name": "Product 007",
+    "category": "home",
+    "unit_price": 364.37,
+    "in_stock": 187
+  },
+  {
+    "product_id": 8,
+    "sku": "SKU-0008",
+    "name": "Product 008",
+    "category": "electronics",
+    "unit_price": 28.04,
+    "in_stock": 152
+  },
+  {
+    "product_id": 9,
+    "sku": "SKU-0009",
+    "name": "Product 009",
+    "category": "books",
+    "unit_price": 68.77,
+    "in_stock": 34
+  },
+  {
+    "product_id": 10,
+    "sku": "SKU-0010",
+    "name": "Product 010",
+    "category": "home",
+    "unit_price": 166.69,
+    "in_stock": 207
+  },
+  {
+    "product_id": 11,
+    "sku": "SKU-0011",
+    "name": "Product 011",
+    "category": "apparel",
+    "unit_price": 451.83,
+    "in_stock": 159
+  },
+  {
+    "product_id": 12,
+    "sku": "SKU-0012",
+    "name": "Product 012",
+    "category": "outdoor",
+    "unit_price": 79.81,
+    "in_stock": 89
+  },
+  {
+    "product_id": 13,
+    "sku": "SKU-0013",
+    "name": "Product 013",
+    "category": "books",
+    "unit_price": 71.35,
+    "in_stock": 60
+  },
+  {
+    "product_id": 14,
+    "sku": "SKU-0014",
+    "name": "Product 014",
+    "category": "books",
+    "unit_price": 280.14,
+    "in_stock": 58
+  },
+  {
+    "product_id": 15,
+    "sku": "SKU-0015",
+    "name": "Product 015",
+    "category": "apparel",
+    "unit_price": 275.87,
+    "in_stock": 111
+  },
+  {
+    "product_id": 16,
+    "sku": "SKU-0016",
+    "name": "Product 016",
+    "category": "outdoor",
+    "unit_price": 403.77,
+    "in_stock": 199
+  },
+  {
+    "product_id": 17,
+    "sku": "SKU-0017",
+    "name": "Product 017",
+    "category": "outdoor",
+    "unit_price": 216.4,
+    "in_stock": 62
+  },
+  {
+    "product_id": 18,
+    "sku": "SKU-0018",
+    "name": "Product 018",
+    "category": "books",
+    "unit_price": 221.27,
+    "in_stock": 131
+  },
+  {
+    "product_id": 19,
+    "sku": "SKU-0019",
+    "name": "Product 019",
+    "category": "electronics",
+    "unit_price": 213.17,
+    "in_stock": 178
+  },
+  {
+    "product_id": 20,
+    "sku": "SKU-0020",
+    "name": "Product 020",
+    "category": "outdoor",
+    "unit_price": 264.58,
+    "in_stock": 1
+  },
+  {
+    "product_id": 21,
+    "sku": "SKU-0021",
+    "name": "Product 021",
+    "category": "home",
+    "unit_price": 87.96,
+    "in_stock": 233
+  },
+  {
+    "product_id": 22,
+    "sku": "SKU-0022",
+    "name": "Product 022",
+    "category": "electronics",
+    "unit_price": 295.72,
+    "in_stock": 162
+  },
+  {
+    "product_id": 23,
+    "sku": "SKU-0023",
+    "name": "Product 023",
+    "category": "electronics",
+    "unit_price": 438.18,
+    "in_stock": 99
+  },
+  {
+    "product_id": 24,
+    "sku": "SKU-0024",
+    "name": "Product 024",
+    "category": "home",
+    "unit_price": 24.84,
+    "in_stock": 34
+  },
+  {
+    "product_id": 25,
+    "sku": "SKU-0025",
+    "name": "Product 025",
+    "category": "electronics",
+    "unit_price": 161.63,
+    "in_stock": 165
+  },
+  {
+    "product_id": 26,
+    "sku": "SKU-0026",
+    "name": "Product 026",
+    "category": "electronics",
+    "unit_price": 321.69,
+    "in_stock": 207
+  },
+  {
+    "product_id": 27,
+    "sku": "SKU-0027",
+    "name": "Product 027",
+    "category": "books",
+    "unit_price": 133.47,
+    "in_stock": 136
+  },
+  {
+    "product_id": 28,
+    "sku": "SKU-0028",
+    "name": "Product 028",
+    "category": "electronics",
+    "unit_price": 76.89,
+    "in_stock": 2
+  },
+  {
+    "product_id": 29,
+    "sku": "SKU-0029",
+    "name": "Product 029",
+    "category": "apparel",
+    "unit_price": 332.13,
+    "in_stock": 138
+  },
+  {
+    "product_id": 30,
+    "sku": "SKU-0030",
+    "name": "Product 030",
+    "category": "home",
+    "unit_price": 393.13,
+    "in_stock": 103
+  }
+]

@@ -1,0 +1,452 @@
+[
+  {
+    "customer_id": 1,
+    "first_name": "First001",
+    "last_name": "Last001",
+    "email": "customer001@example.com",
+    "city": "Paris",
+    "signup_at": "2024-10-24T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 2,
+    "first_name": "First002",
+    "last_name": "Last002",
+    "email": "customer002@example.com",
+    "city": "Vienna",
+    "signup_at": "2024-04-30T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 3,
+    "first_name": "First003",
+    "last_name": "Last003",
+    "email": "customer003@example.com",
+    "city": "Lisbon",
+    "signup_at": "2025-01-24T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 4,
+    "first_name": "First004",
+    "last_name": "Last004",
+    "email": "customer004@example.com",
+    "city": "Amsterdam",
+    "signup_at": "2024-01-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 5,
+    "first_name": "First005",
+    "last_name": "Last005",
+    "email": "customer005@example.com",
+    "city": "Amsterdam",
+    "signup_at": "2025-02-07T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 6,
+    "first_name": "First006",
+    "last_name": "Last006",
+    "email": "customer006@example.com",
+    "city": "Berlin",
+    "signup_at": "2024-09-11T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 7,
+    "first_name": "First007",
+    "last_name": "Last007",
+    "email": "customer007@example.com",
+    "city": "Paris",
+    "signup_at": "2025-01-30T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 8,
+    "first_name": "First008",
+    "last_name": "Last008",
+    "email": "customer008@example.com",
+    "city": "Rome",
+    "signup_at": "2024-04-27T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 9,
+    "first_name": "First009",
+    "last_name": "Last009",
+    "email": "customer009@example.com",
+    "city": "Vienna",
+    "signup_at": "2024-12-25T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 10,
+    "first_name": "First010",
+    "last_name": "Last010",
+    "email": "customer010@example.com",
+    "city": "Rome",
+    "signup_at": "2025-10-28T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 11,
+    "first_name": "First011",
+    "last_name": "Last011",
+    "email": null,
+    "city": "Paris",
+    "signup_at": "2024-07-05T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 12,
+    "first_name": "First012",
+    "last_name": "Last012",
+    "email": "customer012@example.com",
+    "city": "Vienna",
+    "signup_at": "2025-07-20T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 13,
+    "first_name": "First013",
+    "last_name": "Last013",
+    "email": "customer013@example.com",
+    "city": "Berlin",
+    "signup_at": "2025-03-05T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 14,
+    "first_name": "First014",
+    "last_name": "Last014",
+    "email": "customer014@example.com",
+    "city": "Rome",
+    "signup_at": "2024-06-15T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 15,
+    "first_name": "First015",
+    "last_name": "Last015",
+    "email": "customer015@example.com",
+    "city": "Paris",
+    "signup_at": "2024-08-28T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 16,
+    "first_name": "First016",
+    "last_name": "Last016",
+    "email": "customer016@example.com",
+    "city": "Lisbon",
+    "signup_at": "2025-01-06T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 17,
+    "first_name": "First017",
+    "last_name": "Last017",
+    "email": "customer017@example.com",
+    "city": "Berlin",
+    "signup_at": "2025-04-22T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 18,
+    "first_name": "First018",
+    "last_name": "Last018",
+    "email": "customer018@example.com",
+    "city": "Berlin",
+    "signup_at": "2025-08-05T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 19,
+    "first_name": "First019",
+    "last_name": "Last019",
+    "email": "customer019@example.com",
+    "city": "Amsterdam",
+    "signup_at": "2025-07-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 20,
+    "first_name": "First020",
+    "last_name": "Last020",
+    "email": "customer020@example.com",
+    "city": "Berlin",
+    "signup_at": "2025-07-29T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 21,
+    "first_name": "First021",
+    "last_name": "Last021",
+    "email": "customer021@example.com",
+    "city": "Madrid",
+    "signup_at": "2024-05-10T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 22,
+    "first_name": "First022",
+    "last_name": "Last022",
+    "email": null,
+    "city": "Paris",
+    "signup_at": "2024-01-31T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 23,
+    "first_name": "First023",
+    "last_name": "Last023",
+    "email": "customer023@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-11-16T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 24,
+    "first_name": "First024",
+    "last_name": "Last024",
+    "email": "customer024@example.com",
+    "city": "Madrid",
+    "signup_at": "2024-05-19T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 25,
+    "first_name": "First025",
+    "last_name": "Last025",
+    "email": "customer025@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-07-17T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 26,
+    "first_name": "First026",
+    "last_name": "Last026",
+    "email": "customer026@example.com",
+    "city": "Madrid",
+    "signup_at": "2025-10-19T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 27,
+    "first_name": "First027",
+    "last_name": "Last027",
+    "email": "customer027@example.com",
+    "city": "Paris",
+    "signup_at": "2025-08-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 28,
+    "first_name": "First028",
+    "last_name": "Last028",
+    "email": "customer028@example.com",
+    "city": "Rome",
+    "signup_at": "2025-06-28T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 29,
+    "first_name": "First029",
+    "last_name": "Last029",
+    "email": "customer029@example.com",
+    "city": "Lisbon",
+    "signup_at": "2025-11-09T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 30,
+    "first_name": "First030",
+    "last_name": "Last030",
+    "email": "customer030@example.com",
+    "city": "Berlin",
+    "signup_at": "2024-12-15T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 31,
+    "first_name": "First031",
+    "last_name": "Last031",
+    "email": "customer031@example.com",
+    "city": "Berlin",
+    "signup_at": "2024-05-03T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 32,
+    "first_name": "First032",
+    "last_name": "Last032",
+    "email": "customer032@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-12-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 33,
+    "first_name": "First033",
+    "last_name": "Last033",
+    "email": null,
+    "city": "Paris",
+    "signup_at": "2025-01-05T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 34,
+    "first_name": "First034",
+    "last_name": "Last034",
+    "email": "customer034@example.com",
+    "city": "Rome",
+    "signup_at": "2024-06-06T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 35,
+    "first_name": "First035",
+    "last_name": "Last035",
+    "email": "customer035@example.com",
+    "city": "Vienna",
+    "signup_at": "2024-01-14T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 36,
+    "first_name": "First036",
+    "last_name": "Last036",
+    "email": "customer036@example.com",
+    "city": "Paris",
+    "signup_at": "2024-07-23T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 37,
+    "first_name": "First037",
+    "last_name": "Last037",
+    "email": "customer037@example.com",
+    "city": "Amsterdam",
+    "signup_at": "2025-08-27T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 38,
+    "first_name": "First038",
+    "last_name": "Last038",
+    "email": "customer038@example.com",
+    "city": "Madrid",
+    "signup_at": "2024-11-02T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 39,
+    "first_name": "First039",
+    "last_name": "Last039",
+    "email": "customer039@example.com",
+    "city": "Vienna",
+    "signup_at": "2025-09-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 40,
+    "first_name": "First040",
+    "last_name": "Last040",
+    "email": "customer040@example.com",
+    "city": "Vienna",
+    "signup_at": "2024-07-15T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 41,
+    "first_name": "First041",
+    "last_name": "Last041",
+    "email": "customer041@example.com",
+    "city": "Paris",
+    "signup_at": "2025-03-20T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 42,
+    "first_name": "First042",
+    "last_name": "Last042",
+    "email": "customer042@example.com",
+    "city": "Lisbon",
+    "signup_at": "2025-02-06T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 43,
+    "first_name": "First043",
+    "last_name": "Last043",
+    "email": "customer043@example.com",
+    "city": "Lisbon",
+    "signup_at": "2025-03-30T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 44,
+    "first_name": "First044",
+    "last_name": "Last044",
+    "email": null,
+    "city": "Vienna",
+    "signup_at": "2024-12-12T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 45,
+    "first_name": "First045",
+    "last_name": "Last045",
+    "email": "customer045@example.com",
+    "city": "Amsterdam",
+    "signup_at": "2024-10-06T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 46,
+    "first_name": "First046",
+    "last_name": "Last046",
+    "email": "customer046@example.com",
+    "city": "Paris",
+    "signup_at": "2025-02-14T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 47,
+    "first_name": "First047",
+    "last_name": "Last047",
+    "email": "customer047@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-03-16T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 48,
+    "first_name": "First048",
+    "last_name": "Last048",
+    "email": "customer048@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-05-28T00:00:00+00:00",
+    "is_active": true
+  },
+  {
+    "customer_id": 49,
+    "first_name": "First049",
+    "last_name": "Last049",
+    "email": "customer049@example.com",
+    "city": "Paris",
+    "signup_at": "2024-12-15T00:00:00+00:00",
+    "is_active": false
+  },
+  {
+    "customer_id": 50,
+    "first_name": "First050",
+    "last_name": "Last050",
+    "email": "customer050@example.com",
+    "city": "Lisbon",
+    "signup_at": "2024-04-21T00:00:00+00:00",
+    "is_active": true
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "name": "customers.id is unique",
+  "description": "Customer ids must be unique. A duplicate indicates an upstream merge / replication problem.",
+  "dataset_id": "REPLACE_WITH_DATASET_ID",
+  "type": "uniqueness",
+  "config": {
+    "columns": ["id"],
+    "ignore_nulls": true
+  },
+  "threshold": { "operator": "gte", "score": 1.0 },
+  "severity": "high",
+  "labels": ["customers", "uniqueness"]
+}
