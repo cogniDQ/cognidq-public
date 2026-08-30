@@ -10,11 +10,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, generate_latest
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.api.v1.dependencies.tenant_auth import TenantAPIError, tenant_api_error_handler
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.logging_config import setup_logging
+from app.core.rate_limit import limiter
 from app.middleware.correlation import CorrelationIdMiddleware
 from app.services.data_sources.errors import DataSourceAPIError, data_source_api_error_handler
 from app.services.datasets.errors import DatasetAPIError, dataset_api_error_handler
@@ -52,6 +55,20 @@ async def http_exception_handler(request, exc: HTTPException) -> JSONResponse:
             "error": {
                 "code": error_code,
                 "message": exc.detail if isinstance(exc.detail, str) else str(exc.detail),
+                "fields": None,
+            }
+        },
+    )
+
+
+async def rate_limit_exceeded_handler(request, exc: RateLimitExceeded) -> JSONResponse:
+    """Return the standard error envelope on rate-limit rejection (HTTP 429)."""
+    return JSONResponse(
+        status_code=429,
+        content={
+            "error": {
+                "code": "rate_limit_exceeded",
+                "message": f"Rate limit exceeded: {exc.detail}",
                 "fields": None,
             }
         },
@@ -133,6 +150,11 @@ app.add_middleware(
 # in all responses, including CORS preflight responses.
 app.add_middleware(CorrelationIdMiddleware)
 
+# Redis-backed rate limiting (global default + stricter per-endpoint limits
+# on sensitive auth routes — see app/api/v1/endpoints/auth.py).
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
 # Register F001 structured error handler
 app.add_exception_handler(TenantAPIError, tenant_api_error_handler)  # type: ignore[arg-type]
 
@@ -147,6 +169,9 @@ app.add_exception_handler(DatasetAPIError, dataset_api_error_handler)  # type: i
 
 # Register global HTTPException handler for consistent error format
 app.add_exception_handler(HTTPException, http_exception_handler)  # type: ignore[arg-type]
+
+# Register rate-limit handler (429) matching the standard error envelope
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)  # type: ignore[arg-type]
 
 
 # Health check endpoint

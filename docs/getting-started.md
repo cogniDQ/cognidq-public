@@ -80,7 +80,7 @@ All services should be `healthy` or `running`.
 ## 4. Apply migrations
 
 ```bash
-docker compose exec backend python scripts/run_migrations.py
+docker compose exec backend alembic upgrade head
 ```
 
 This runs all 60+ ordered SQL migration files from
@@ -179,7 +179,7 @@ Other common causes:
 
 You are likely running `make seed` before migrations. Apply migrations first:
 ```bash
-docker compose exec backend python scripts/run_migrations.py
+docker compose exec backend alembic upgrade head
 docker compose exec backend python scripts/seed_demo_data.py
 ```
 

@@ -16,7 +16,7 @@ docker-compose ps
 
 # Run migrations
 Write-Host "`nRunning database migrations..." -ForegroundColor Yellow
-docker-compose exec backend python /app/scripts/run_migrations.py
+docker-compose exec backend alembic upgrade head
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "`n✓ Migration completed successfully!" -ForegroundColor Green

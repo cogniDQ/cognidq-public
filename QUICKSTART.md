@@ -29,7 +29,7 @@ cp frontend/.env.example frontend/.env
 docker compose up -d
 
 # 5. Apply database migrations
-docker compose exec backend python scripts/run_migrations.py
+docker compose exec backend alembic upgrade head
 
 # 6. Seed demo users
 docker compose exec backend python scripts/seed_demo_data.py
@@ -75,7 +75,7 @@ variables (`OPENAI_API_KEY`, `*_ENCRYPTION_KEY`, `MINIO_ROOT_PASSWORD`,
 **`alembic upgrade head` fails**  
 CogniDQ uses a custom SQL migration runner, not Alembic. Use:
 ```bash
-docker compose exec backend python scripts/run_migrations.py
+docker compose exec backend alembic upgrade head
 ```
 
 **Login returns 401**  
