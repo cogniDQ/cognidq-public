@@ -99,3 +99,6 @@ frontend/playwright/.cache/
 
 #commands
 commands.md
+
+# SonarQube/SonarScanner local working directory
+.scannerwork/
