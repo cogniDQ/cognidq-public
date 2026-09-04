@@ -34,7 +34,8 @@ def _fingerprint(workspace_id: UUID, anomaly: dict[str, Any]) -> str:
         anomaly.get("column", "") or "",
         str(anomaly.get("rule_id") or ""),
     ]
-    return hashlib.sha1("|".join(parts).encode("utf-8")).hexdigest()
+    # Not security-sensitive: used only for dedup fingerprinting, not auth/integrity.
+    return hashlib.sha1("|".join(parts).encode("utf-8"), usedforsecurity=False).hexdigest()
 
 
 class PersistedAnomalyService:

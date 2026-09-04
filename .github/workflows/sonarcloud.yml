@@ -1,0 +1,41 @@
+# Requires manual setup before this workflow can succeed:
+#
+# 1. Create a SonarCloud organization and import this repository at
+#    https://sonarcloud.io (Sonar Cloud is free for public/open-source repos).
+# 2. Note the generated organization key and project key, and set them in
+#    sonar-project.properties (sonar.organization / sonar.projectKey) —
+#    replace the CHANGEME placeholders there.
+# 3. Generate a SonarCloud token (My Account > Security) and add it as a
+#    repository secret named SONAR_TOKEN (Settings > Secrets and variables >
+#    Actions).
+#
+# Until the above is done, this workflow will fail — that is expected and
+# does not block other CI checks.
+name: SonarCloud
+
+on:
+  push:
+    branches: [open-source, main]
+  pull_request:
+    branches: [open-source, main]
+
+permissions:
+  contents: read
+
+jobs:
+  sonarcloud:
+    name: SonarCloud analysis
+    runs-on: ubuntu-latest
+    # Fork PRs don't have access to repository secrets (SONAR_TOKEN), so
+    # skip them rather than fail noisily on every external contribution.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io

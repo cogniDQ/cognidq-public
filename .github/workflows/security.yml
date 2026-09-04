@@ -67,3 +67,115 @@ jobs:
       - run: npm ci
       - name: npm audit (high severity)
         run: npm audit --audit-level=high || true
+
+  bandit:
+    name: Python security (bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install bandit
+        run: pip install "bandit[toml]==1.8.3"
+
+      # Blocking: high severity + high confidence findings must not exist.
+      - name: Bandit (high severity/confidence)
+        run: bandit -c pyproject.toml -r backend/app --severity-level high --confidence-level high
+
+      # Informational: medium+ findings are tracked as pre-existing debt
+      # (dynamic SQL identifier interpolation reviewed as by-design for the
+      # rule-preview engine, hardcoded /tmp defaults, dev-only 0.0.0.0 bind).
+      # See the audit report for the full list; do not silently widen this
+      # to `|| true` without triaging new findings first.
+      - name: Bandit (medium+ severity/confidence, non-blocking)
+        run: bandit -c pyproject.toml -r backend/app --severity-level medium --confidence-level medium
+        continue-on-error: true
+
+  semgrep:
+    name: Security patterns (semgrep)
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+
+      # Informational: full report at default severity so nothing is hidden.
+      - name: Semgrep (full report)
+        run: |
+          semgrep scan \
+            --config=p/security-audit \
+            --config=p/python \
+            --config=p/javascript \
+            --config=p/typescript \
+            --config=p/dockerfile
+
+      # Blocking: only fail CI on high-confidence (ERROR-severity) findings.
+      - name: Semgrep (fail on high-confidence findings)
+        run: |
+          semgrep scan \
+            --config=p/security-audit \
+            --config=p/python \
+            --config=p/javascript \
+            --config=p/typescript \
+            --config=p/dockerfile \
+            --severity=ERROR \
+            --error
+
+  trivy-fs:
+    name: Filesystem & dependency scan (trivy)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Trivy (filesystem)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          # Secret scanning is owned by gitleaks (above) to avoid two tools
+          # fighting over the same allowlist; trivy covers deps + misconfig.
+          scanners: vuln,misconfig
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          format: table
+          skip-dirs: frontend/node_modules,frontend/dist,backend/.venv
+
+  trivy-image:
+    name: Docker image scan (trivy)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        include:
+          - name: backend
+            context: ./backend
+            dockerfile: Dockerfile
+          - name: frontend
+            context: ./frontend
+            dockerfile: Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.name }} image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.dockerfile }}
+          push: false
+          load: true
+          tags: cognidq-${{ matrix.name }}:ci
+
+      - name: Run Trivy (image)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: cognidq-${{ matrix.name }}:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          format: table
