@@ -1,73 +1,73 @@
 # Web Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.7
-pydantic==2.5.0
-pydantic-settings==2.1.0
-email-validator==2.1.0
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+pydantic==2.13.5
+pydantic-settings==2.15.0
+email-validator==2.3.0
 
 # Database
-sqlalchemy==2.0.23
-alembic==1.12.1
-psycopg2-binary==2.9.9
-asyncpg==0.29.0
+sqlalchemy==2.0.52
+alembic==1.19.1
+psycopg2-binary==2.9.12
+asyncpg==0.31.0
 databases[asyncpg]==0.9.0
 
 # Authentication & Security
-python-jose[cryptography]==3.4.0
+python-jose[cryptography]==3.5.0
 passlib[bcrypt]==1.7.4
-python-dotenv==1.0.0
-cryptography==41.0.7
-pyotp==2.9.0
-qrcode==7.4.2
+python-dotenv==1.2.3
+cryptography==50.0.1
+pyotp==2.10.0
+qrcode==8.2
 
 # LLM & AI
-openai>=1.10.0,<2.0.0
-langchain>=0.1.0,<0.2.0
-langchain-openai>=0.0.5,<0.1.0
-langchain-core>=0.1.0,<0.2.0
-langgraph>=0.0.20,<0.1.0
-sentence-transformers==2.3.1
+openai>=3.6.0,<4.0.0
+langchain>=1.3.18,<1.4.0
+langchain-openai>=1.6.0,<1.7.0
+langchain-core>=1.6.1,<1.7.0
+langgraph>=1.2.11,<1.3.0
+sentence-transformers==6.0.1
 # chromadb removed: unused (no imports anywhere in app/) and carries
 # unpatched critical CVEs (CVE-2026-45833, CVE-2026-45830) with no fixed
 # version available upstream. Re-add only with a patched release.
-tiktoken==0.5.2
+tiktoken==0.14.0
 
 # Data Processing
-pandas==2.1.3
-numpy==1.26.2
-pyspark==3.5.0
+pandas==3.0.5
+numpy==2.5.2
+pyspark==4.2.0
 findspark==2.0.1  # Helper for Spark initialization
-chardet==5.2.0
-openpyxl==3.1.2
-xlrd==2.0.1
-pyarrow==14.0.1
+chardet==7.6.0
+openpyxl==3.1.5
+xlrd==2.0.2
+pyarrow==25.0.1
 
 # Storage
-minio==7.2.0
+minio==7.2.20
 
 # Spark JDBC Connectors (included in Docker image)
 # postgresql-jdbc, mysql-connector will be in spark-jars volume
 
 # Task Queue
-celery==5.3.4
-redis==5.0.1
-croniter==2.0.1  # For cron-based scheduling
+celery==5.6.3
+redis==8.1.0
+croniter==6.2.4  # For cron-based scheduling
 
 # HTTP Client
-httpx==0.25.2
-aiohttp==3.9.2
-slowapi==0.1.9
-prometheus-client==0.19.0
+httpx==0.28.1
+aiohttp==3.14.3
+slowapi==0.1.10
+prometheus-client==0.26.0
 
 # Utilities
-python-slugify==8.0.1
-pyyaml==6.0.1
-loguru==0.7.2
-tenacity==8.2.3
+python-slugify==8.0.4
+pyyaml==6.0.3
+loguru==0.7.3
+tenacity==9.1.4
 
 # Testing
-pytest==7.4.3
-pytest-asyncio==0.21.1
-pytest-cov==4.1.0
-faker==20.1.0
+pytest==9.1.1
+pytest-asyncio==1.4.0
+pytest-cov==7.1.0
+faker==40.38.0
