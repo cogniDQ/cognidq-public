@@ -165,6 +165,7 @@ jobs:
       contents: read
       security-events: write
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: backend
