@@ -1,6 +1,6 @@
 # Use the official Spark image — already has Java, Spark binaries, and Python 3.
 # This replaces the previous approach of downloading Spark via wget at build time.
-FROM apache/spark:3.5.0-python3
+FROM apache/spark:4.2.0-python3
 
 USER root
 
