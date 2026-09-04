@@ -109,7 +109,7 @@ def _upsert_tenant(cur) -> None:
         )
         VALUES (
             %s, 'Demo Tenant', 'demo',
-            'ACTIVE', 'eu-west', 'enterprise',
+            'active', 'eu-west', 'enterprise',
             NOW(), NOW(),
             %s, %s, 0
         )
@@ -134,7 +134,7 @@ def _upsert_workspace(cur) -> None:
         VALUES (
             %s, %s,
             'Demo Workspace', 'demo-workspace',
-            'UTC', 'ACTIVE',
+            'UTC', 'active',
             NOW(), NOW(),
             %s, %s, 0
         )

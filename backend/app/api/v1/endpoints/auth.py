@@ -4,7 +4,7 @@ Authentication API endpoints
 
 import logging
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.rate_limit import limiter
@@ -55,7 +55,9 @@ def get_client_ip(request: Request) -> str:
 
 @router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
-def register(request: RegisterRequest, req: Request, db: Session = Depends(get_db)):
+def register(
+    payload: RegisterRequest, request: Request, response: Response, db: Session = Depends(get_db)
+):
     """
     Register a new user
 
@@ -64,14 +66,16 @@ def register(request: RegisterRequest, req: Request, db: Session = Depends(get_d
     - **full_name**: Optional full name
     """
     auth_service = AuthService(db)
-    ip_address = get_client_ip(req)
+    ip_address = get_client_ip(request)
 
-    return auth_service.register_user(request, ip_address=ip_address)
+    return auth_service.register_user(payload, ip_address=ip_address)
 
 
 @router.post("/login", response_model=LoginResponse)
 @limiter.limit("10/minute")
-def login(request: LoginRequest, req: Request, db: Session = Depends(get_db)):
+def login(
+    payload: LoginRequest, request: Request, response: Response, db: Session = Depends(get_db)
+):
     """
     Login with email and password
 
@@ -82,10 +86,10 @@ def login(request: LoginRequest, req: Request, db: Session = Depends(get_db)):
     Returns access token, refresh token, and user profile
     """
     auth_service = AuthService(db)
-    device_info = get_client_info(req)
-    ip_address = get_client_ip(req)
+    device_info = get_client_info(request)
+    ip_address = get_client_ip(request)
 
-    return auth_service.login(request, device_info=device_info, ip_address=ip_address)
+    return auth_service.login(payload, device_info=device_info, ip_address=ip_address)
 
 
 @router.post("/logout", response_model=MessageResponse)
@@ -257,7 +261,10 @@ def change_password(
 @router.post("/password-reset/request", response_model=MessageResponse)
 @limiter.limit("5/minute")
 def request_password_reset(
-    request: PasswordResetRequest, req: Request, db: Session = Depends(get_db)
+    payload: PasswordResetRequest,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
 ):
     """
     Request password reset
@@ -267,13 +274,16 @@ def request_password_reset(
     Sends password reset email if email exists
     """
     auth_service = AuthService(db)
-    return auth_service.request_password_reset(request)
+    return auth_service.request_password_reset(payload)
 
 
 @router.post("/password-reset/confirm", response_model=MessageResponse)
 @limiter.limit("10/minute")
 def confirm_password_reset(
-    request: PasswordResetConfirm, req: Request, db: Session = Depends(get_db)
+    payload: PasswordResetConfirm,
+    request: Request,
+    response: Response,
+    db: Session = Depends(get_db),
 ):
     """
     Confirm password reset with token
@@ -282,7 +292,7 @@ def confirm_password_reset(
     - **new_password**: New password (min 8 characters, must contain uppercase, lowercase, and digit)
     """
     auth_service = AuthService(db)
-    return auth_service.reset_password(request)
+    return auth_service.reset_password(payload)
 
 
 @router.get("/verify-email/{token}", response_model=MessageResponse)

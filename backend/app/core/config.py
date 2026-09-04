@@ -168,6 +168,11 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        # .env.example documents optional/future integration variables
+        # (cloud provider settings, enterprise toggles, etc.) that are not
+        # yet backed by a Settings field. Without this, any such variable
+        # present in the environment causes a hard crash at startup.
+        extra = "ignore"
 
 
 # Create settings instance
