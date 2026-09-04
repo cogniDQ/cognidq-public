@@ -59,13 +59,17 @@ class FlowBuilderCache:
 
     def _hash_dict(self, data: dict[str, Any]) -> str:
         """Hash dictionary for cache key"""
-        return hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
+        # Not security-sensitive: used only to build a cache key, not for auth/integrity.
+        return hashlib.md5(
+            json.dumps(data, sort_keys=True).encode(), usedforsecurity=False
+        ).hexdigest()
 
     def _hash_list(self, data: list) -> str:
         """Hash list for cache key"""
         # Only hash IDs to avoid column changes invalidating cache
         ids = [item.get("id") for item in data if isinstance(item, dict)]
-        return hashlib.md5(json.dumps(sorted(ids)).encode()).hexdigest()
+        # Not security-sensitive: used only to build a cache key, not for auth/integrity.
+        return hashlib.md5(json.dumps(sorted(ids)).encode(), usedforsecurity=False).hexdigest()
 
     def get(
         self, prompt: str, current_flow: dict[str, Any], available_sources: list

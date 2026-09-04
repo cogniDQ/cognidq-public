@@ -8,6 +8,9 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Node 20+](https://img.shields.io/badge/node-20+-339933.svg)](https://nodejs.org/)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-orange.svg)](ROADMAP.md)
+[![CI](https://github.com/cogniDQ/cognidq-public/actions/workflows/ci.yml/badge.svg)](https://github.com/cogniDQ/cognidq-public/actions/workflows/ci.yml)
+[![Security](https://github.com/cogniDQ/cognidq-public/actions/workflows/security.yml/badge.svg)](https://github.com/cogniDQ/cognidq-public/actions/workflows/security.yml)
+[![CodeQL](https://github.com/cogniDQ/cognidq-public/actions/workflows/codeql.yml/badge.svg)](https://github.com/cogniDQ/cognidq-public/actions/workflows/codeql.yml)
 
 CogniDQ is a multi-tenant control plane for data quality. It is **not**
 a streaming engine, **not** a metadata catalog, and **not** a writeback

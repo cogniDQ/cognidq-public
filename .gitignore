@@ -96,3 +96,9 @@ frontend/trace-debug*/
 frontend/test-results/
 frontend/playwright-report/
 frontend/playwright/.cache/
+
+#commands
+commands.md
+
+# SonarQube/SonarScanner local working directory
+.scannerwork/
