@@ -1930,8 +1930,13 @@ async def get_workspace_stats(
     row = db.execute(
         text("""
             SELECT
-                (SELECT COUNT(*) FROM data_sources
-                 WHERE workspace_id = :wid) AS datasource_count,
+                (SELECT COUNT(DISTINCT ds.data_source_id)
+                 FROM control.data_sources ds
+                 LEFT JOIN control.workspace_connection_assignments wca
+                   ON wca.connection_id = ds.data_source_id
+                 WHERE ds.status = 'active'
+                   AND (ds.workspace_id = :wid OR wca.workspace_id = :wid)
+                ) AS datasource_count,
                 (SELECT COUNT(*) FROM control.metadata_term_index
                  WHERE workspace_id = :wid) AS glossary_count,
                 (SELECT COUNT(*) FROM dq_flows
