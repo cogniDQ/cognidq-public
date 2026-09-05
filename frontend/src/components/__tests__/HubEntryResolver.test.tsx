@@ -53,18 +53,18 @@ describe('HubEntryResolver', () => {
     expect(document.querySelector('.animate-spin')).toBeTruthy()
   })
 
-  it('redirects platform_admin to /admin/tenants', () => {
+  it('redirects platform_admin to /admin', () => {
     mockUseWorkspace.mockReturnValue({ workspaces: [], loading: false })
     mockGetActorRole.mockReturnValue('platform_admin')
     const target = renderResolver()
-    expect(target).toBe('/admin/tenants')
+    expect(target).toBe('/admin')
   })
 
-  it('redirects platform_viewer to /admin/tenants', () => {
+  it('redirects platform_viewer to /admin', () => {
     mockUseWorkspace.mockReturnValue({ workspaces: [], loading: false })
     mockGetActorRole.mockReturnValue('platform_viewer')
     const target = renderResolver()
-    expect(target).toBe('/admin/tenants')
+    expect(target).toBe('/admin')
   })
 
   it('redirects single-workspace user to workspace overview', () => {

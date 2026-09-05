@@ -16,6 +16,10 @@ vi.mock('@/contexts/WorkspaceContext', () => ({
   useWorkspace: vi.fn(),
 }))
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: vi.fn(),
+}))
+
 vi.mock('@/services/reportingService', () => ({
   default: {
     getWorkspaceStats: vi.fn().mockResolvedValue({
@@ -28,7 +32,9 @@ vi.mock('@/services/reportingService', () => ({
 }))
 
 import { useWorkspace } from '@/contexts/WorkspaceContext'
+import { useAuth } from '@/contexts/AuthContext'
 const mockUseWorkspace = useWorkspace as ReturnType<typeof vi.fn>
+const mockUseAuth = useAuth as ReturnType<typeof vi.fn>
 
 const WS_ID = 'ws-abc-123'
 
@@ -55,6 +61,10 @@ describe('WorkspaceOverview tiles (F132 P03)', () => {
       workspaces: [],
       loading: false,
     })
+    // Connections tile is only shown to tenant/platform admins.
+    mockUseAuth.mockReturnValue({
+      user: { email: 'admin@example.com', platform_role: 'tenant_admin' },
+    })
   })
 
   afterEach(() => {
@@ -71,14 +81,14 @@ describe('WorkspaceOverview tiles (F132 P03)', () => {
   // T03-02: Glossary tile points to the workspace-scoped /hub/ws/{id}/glossary
   it('T03-02: Glossary tile href is /hub/ws/{workspace_id}/glossary', async () => {
     renderOverview()
-    const link = await screen.findByRole('link', { name: /glossary/i })
+    const link = await screen.findByRole('link', { name: /^glossary define/i })
     expect(link.getAttribute('href')).toBe(`/hub/ws/${WS_ID}/glossary`)
   })
 
   // T03-03: Flows tile points to /hub/ws/{id}/flows
   it('T03-03: Flows tile href is /hub/ws/{workspace_id}/flows', async () => {
     renderOverview()
-    const link = await screen.findByRole('link', { name: /flows/i })
+    const link = await screen.findByRole('link', { name: /^flows create/i })
     expect(link.getAttribute('href')).toBe(`/hub/ws/${WS_ID}/flows`)
   })
 
@@ -102,5 +112,17 @@ describe('WorkspaceOverview tiles (F132 P03)', () => {
     // Legacy tile heading labels should not appear
     expect(screen.queryByRole('heading', { name: /^Data Sources$/i })).toBeNull()
     expect(screen.queryByRole('heading', { name: /^Flow Builder$/i })).toBeNull()
+  })
+
+  // T03-06: non-admin roles get a Datasets tile instead of the (forbidden)
+  // tenant-admin-only Connections tile
+  it('T03-06: workspace roles see Datasets tile instead of Connections', async () => {
+    mockUseAuth.mockReturnValue({
+      user: { email: 'steward@example.com', platform_role: null },
+    })
+    renderOverview()
+    const link = await screen.findByRole('link', { name: /datasets/i })
+    expect(link.getAttribute('href')).toBe(`/hub/ws/${WS_ID}/datasets`)
+    expect(screen.queryByRole('heading', { name: /^Connections$/i })).toBeNull()
   })
 })

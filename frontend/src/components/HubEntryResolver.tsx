@@ -20,7 +20,7 @@ export default function HubEntryResolver() {
   const role = getActorRole(token);
 
   if (role === 'platform_admin' || role === 'platform_viewer') {
-    return <Navigate to="/admin/tenants" replace />;
+    return <Navigate to="/admin" replace />;
   }
 
   if (role === 'tenant_admin') {

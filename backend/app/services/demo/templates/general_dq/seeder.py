@@ -631,6 +631,11 @@ class GeneralDQSeeder:
 
     def _seed_dashboard(self, workspace_id: UUID, now: datetime) -> UUID:
         dash_id = _uid(workspace_id, "dashboard_dq_overview")
+        # public.dashboards is not part of the core migrations — skip when absent.
+        exists = self._db.execute(text("SELECT to_regclass('public.dashboards')")).scalar()
+        if exists is None:
+            logger.info("general_dq: public.dashboards missing — skipping dashboard seed.")
+            return dash_id
         layout = {
             "panels": [
                 {

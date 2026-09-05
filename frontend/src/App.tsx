@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminGuard from './components/admin/AdminGuard'
 import AdminLayout from './components/admin/AdminLayout'
 import TenantListPage from './pages/admin/tenants/TenantListPage'
+import PlatformWelcome from './pages/admin/PlatformWelcome'
 import CreateTenantPage from './pages/admin/tenants/CreateTenantPage'
 import TenantDetailPage from './pages/admin/tenants/TenantDetailPage'
 import EditTenantPage from './pages/admin/tenants/EditTenantPage'
@@ -130,6 +131,13 @@ function App() {
             } />
 
             {/* Section 2: Platform Admin */}
+            <Route path="/admin" element={
+              <AdminGuard>
+                <AdminLayout>
+                  <PlatformWelcome />
+                </AdminLayout>
+              </AdminGuard>
+            } />
             <Route path="/admin/tenants" element={
               <AdminGuard>
                 <AdminLayout>

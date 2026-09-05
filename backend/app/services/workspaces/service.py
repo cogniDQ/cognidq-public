@@ -761,7 +761,7 @@ class WorkspaceService:
     def list_workspaces(
         self,
         db: Session,
-        tenant_id: UUID,
+        tenant_id: UUID | None,
         *,
         include_archived: bool = False,
         q: str | None = None,
@@ -782,6 +782,8 @@ class WorkspaceService:
         ----------
         tenant_id:
             Scope results to this tenant (always from JWT for regular users).
+            ``None`` for platform operators without a tenant claim — results
+            span all tenants.
         include_archived:
             When ``True``, archived workspaces are included in results.
         q:

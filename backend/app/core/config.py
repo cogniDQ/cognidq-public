@@ -168,6 +168,10 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        # pydantic-settings v2 defaults to extra="forbid", which crashes the
+        # app when .env contains any variable not declared above (e.g. the
+        # compose-only MINIO_ROOT_* / GF_* keys shipped in .env.example).
+        extra = "ignore"
 
 
 # Create settings instance

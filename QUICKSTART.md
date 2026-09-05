@@ -31,7 +31,7 @@ docker compose up -d
 # 5. Apply database migrations
 docker compose exec backend alembic upgrade head
 
-# 6. Seed demo users
+# 6. Seed demo users + demo content
 docker compose exec backend python scripts/seed_demo_data.py
 ```
 
@@ -40,8 +40,11 @@ Open **http://localhost:5173** and sign in:
 | Email | Password | Role |
 |---|---|---|
 | `admin@example.com` | `change-me-strong-password` | Platform admin |
-| `steward@example.com` | `change-me-strong-password` | Data steward |
-| `viewer@example.com` | `change-me-strong-password` | Governance viewer |
+| `steward@example.com` | `change-me-strong-password` | Data steward (workspace) |
+
+The Demo Workspace comes pre-loaded with a live connection, datasets,
+glossary terms, DQ rules, a flow, open issues, and one real flow run —
+so every page has something to explore.
 
 ## Useful URLs
 
@@ -69,11 +72,12 @@ make reset          # DESTRUCTIVE: wipe all local volumes
 **`docker compose up` exits immediately with "variable is not set"**  
 The root `.env` file is missing or incomplete. Docker Compose reads required
 variables (`OPENAI_API_KEY`, `*_ENCRYPTION_KEY`, `MINIO_ROOT_PASSWORD`,
-`GF_SECURITY_ADMIN_PASSWORD`) from `.env` in the project root � not from
+`GF_SECURITY_ADMIN_PASSWORD`) from `.env` in the project root — not from
 `backend/.env`.
 
-**`alembic upgrade head` fails**  
-CogniDQ uses a custom SQL migration runner, not Alembic. Use:
+**Migrations**  
+Migrations run through Alembic, which wraps the ordered SQL files in
+`backend/scripts/migrations/`:
 ```bash
 docker compose exec backend alembic upgrade head
 ```
