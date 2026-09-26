@@ -275,7 +275,7 @@ async def test_connection(
     _parse_tenant_id(tenant_id)
     _parse_connection_id(connection_id)
     try:
-        result = _service.test_connection(body.type, body.connection_config)
+        result = await _service.test_connection(body.type, body.connection_config)
     except Exception as exc:
         logger.warning("Connection test failed: %s", exc)
         return JSONResponse(

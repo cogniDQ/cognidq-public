@@ -75,6 +75,13 @@ export function ComponentLibrary({
             <div
               key={check.id}
               onClick={() => onCheckAdd(check)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onCheckAdd(check);
+                }
+              }}
+              tabIndex={0}
               className="card-hover p-2 cursor-pointer group"
             >
               <div className="flex items-start space-x-2">

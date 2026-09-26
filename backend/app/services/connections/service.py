@@ -184,12 +184,15 @@ class TenantConnectionService:
         db.commit()
         return result
 
-    def test_connection(
+    async def test_connection(
         self,
         source_type: str,
         connection_config: dict[str, Any],
     ) -> dict[str, Any]:
-        """Delegate to existing DataSourceService for connection testing."""
-        from app.services.data_sources.service import DataSourceService
+        """Test a raw connection config before it is persisted as a connection."""
+        from app.services.datasources.connection_manager import ConnectionManager
 
-        return DataSourceService().test_connection(source_type, connection_config)
+        success, message, details = await ConnectionManager.test_connection(
+            source_type, connection_config, encrypted=False
+        )
+        return {"success": success, "message": message, "details": details}

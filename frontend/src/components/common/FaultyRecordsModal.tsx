@@ -140,6 +140,9 @@ export default function FaultyRecordsModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
     >
       <div className="flex h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-xl border border-edge-strong bg-surface-raised shadow-2xl">
         {/* Header */}

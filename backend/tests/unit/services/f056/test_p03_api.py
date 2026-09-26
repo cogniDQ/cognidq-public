@@ -54,11 +54,11 @@ class TestCreateTokenEndpoint:
         from app.api.v1.endpoints.tokens import create_token
 
         token_model = _mock_token_model()
-        mock_svc_class.create_token.return_value = (token_model, "dqai_secret123")
+        mock_svc_class.create_token.return_value = (token_model, "dqai_secret123")  # gitleaks:allow
 
         req = CreateTokenRequest(name="my-token", scopes=["read"])
         result = create_token(request=req, db=_db(), current_user=_mock_user())
-        assert result.token == "dqai_secret123"
+        assert result.token == "dqai_secret123"  # gitleaks:allow
         assert result.name == "test-token"
 
     @patch("app.api.v1.endpoints.tokens.AccessTokenService")

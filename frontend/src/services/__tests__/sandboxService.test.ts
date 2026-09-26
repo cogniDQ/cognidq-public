@@ -33,7 +33,9 @@ const mockDelete = vi.mocked(api.delete);
 
 const SANDBOX_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 // ── demoRequestService ─────────────────────────────────────────────────────
 

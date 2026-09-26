@@ -76,6 +76,109 @@ interface DataAssetsPanelProps {
   onAddToFlow?: (asset: DataAsset) => void
 }
 
+// Extracted as a top-level component (not an inline map callback) to keep
+// the deeply-nested PostgreSQL hierarchy render tree within Sonar's
+// function-nesting-depth limit.
+interface PostgresTableRowProps {
+  asset: DataAsset
+  isSelected: boolean
+  profiling: boolean
+  onSelect: (asset: DataAsset) => void
+  onAddToFlow: (asset: DataAsset) => void
+  onProfile: (asset: DataAsset) => void
+  onViewMetadata: (asset: DataAsset) => void
+}
+
+function PostgresTableRow({
+  asset,
+  isSelected,
+  profiling,
+  onSelect,
+  onAddToFlow,
+  onProfile,
+  onViewMetadata,
+}: PostgresTableRowProps) {
+  const tableName = asset.metadata?.table_name?.split('.').pop() || asset.name.split('.').pop()
+
+  return (
+    <div
+      className={`px-4 py-3 pl-16 cursor-pointer transition-all hover:bg-dark-700 border-b border-dark-800 last:border-b-0 ${
+        isSelected ? 'bg-primary-500/10' : ''
+      }`}
+      onClick={() => onSelect(asset)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onSelect(asset)
+        }
+      }}
+      tabIndex={0}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex items-start space-x-3 flex-1 min-w-0">
+          <FileSpreadsheet className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <h4 className="text-sm font-medium text-gray-200 truncate">
+              {tableName}
+            </h4>
+            <div className="flex items-center space-x-3 mt-1 text-xs text-gray-500">
+              {asset.rows && (
+                <span>{asset.rows.toLocaleString()} rows</span>
+              )}
+              {asset.columns && (
+                <span>{asset.columns} columns</span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2 ml-2">
+          {asset.status === 'active' && (
+            <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-2 mt-2 ml-7">
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onAddToFlow(asset)
+          }}
+          className="px-2.5 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors flex items-center space-x-1"
+        >
+          <Plus className="w-3 h-3" />
+          <span>Add to Flow</span>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onProfile(asset)
+          }}
+          disabled={profiling}
+          className="px-2.5 py-1 bg-dark-700 text-gray-300 text-xs rounded hover:bg-dark-600 transition-colors flex items-center space-x-1 disabled:opacity-50"
+        >
+          {profiling ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            <BarChart3 className="w-3 h-3" />
+          )}
+          <span>Profile</span>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onViewMetadata(asset)
+          }}
+          className="px-2.5 py-1 bg-dark-700 text-gray-300 text-xs rounded hover:bg-dark-600 transition-colors flex items-center space-x-1"
+        >
+          <Eye className="w-3 h-3" />
+          <span>View</span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function DataAssetsPanel({ onSelectAsset, onAddToFlow }: DataAssetsPanelProps) {
   const { currentWorkspace } = useWorkspace()
   const [assets, setAssets] = useState<DataAsset[]>([])
@@ -406,85 +509,24 @@ export function DataAssetsPanel({ onSelectAsset, onAddToFlow }: DataAssetsPanelP
                         {/* Tables Level */}
                         {isSchemaExpanded && (
                           <div className="bg-dark-950/50">
-                            {tables.map((asset) => {
-                              const tableName = asset.metadata?.table_name?.split('.').pop() || asset.name.split('.').pop()
-                              
-                              return (
-                                <div
-                                  key={asset.id}
-                                  className={`px-4 py-3 pl-16 cursor-pointer transition-all hover:bg-dark-700 border-b border-dark-800 last:border-b-0 ${
-                                    selectedAsset?.id === asset.id ? 'bg-primary-500/10' : ''
-                                  }`}
-                                  onClick={() => {
-                                    setSelectedAsset(asset)
-                                    if (onSelectAsset) onSelectAsset(asset)
-                                  }}
-                                >
-                                  <div className="flex items-start justify-between">
-                                    <div className="flex items-start space-x-3 flex-1 min-w-0">
-                                      <FileSpreadsheet className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                                      <div className="flex-1 min-w-0">
-                                        <h4 className="text-sm font-medium text-gray-200 truncate">
-                                          {tableName}
-                                        </h4>
-                                        <div className="flex items-center space-x-3 mt-1 text-xs text-gray-500">
-                                          {asset.rows && (
-                                            <span>{asset.rows.toLocaleString()} rows</span>
-                                          )}
-                                          {asset.columns && (
-                                            <span>{asset.columns} columns</span>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center space-x-2 ml-2">
-                                      {asset.status === 'active' && (
-                                        <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                                      )}
-                                    </div>
-                                  </div>
-                                  
-                                  <div className="flex items-center space-x-2 mt-2 ml-7">
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleAddAssetToFlow(asset)
-                                      }}
-                                      className="px-2.5 py-1 bg-primary-500 text-white text-xs rounded hover:bg-primary-600 transition-colors flex items-center space-x-1"
-                                    >
-                                      <Plus className="w-3 h-3" />
-                                      <span>Add to Flow</span>
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleProfileAsset(asset)
-                                      }}
-                                      disabled={profiling}
-                                      className="px-2.5 py-1 bg-dark-700 text-gray-300 text-xs rounded hover:bg-dark-600 transition-colors flex items-center space-x-1 disabled:opacity-50"
-                                    >
-                                      {profiling ? (
-                                        <Loader2 className="w-3 h-3 animate-spin" />
-                                      ) : (
-                                        <BarChart3 className="w-3 h-3" />
-                                      )}
-                                      <span>Profile</span>
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        setMetadataAsset(asset)
-                                        setShowMetadataModal(true)
-                                      }}
-                                      className="px-2.5 py-1 bg-dark-700 text-gray-300 text-xs rounded hover:bg-dark-600 transition-colors flex items-center space-x-1"
-                                    >
-                                      <Eye className="w-3 h-3" />
-                                      <span>View</span>
-                                    </button>
-                                  </div>
-                                </div>
-                              )
-                            })}
+                            {tables.map((asset) => (
+                              <PostgresTableRow
+                                key={asset.id}
+                                asset={asset}
+                                isSelected={selectedAsset?.id === asset.id}
+                                profiling={profiling}
+                                onSelect={(a) => {
+                                  setSelectedAsset(a)
+                                  if (onSelectAsset) onSelectAsset(a)
+                                }}
+                                onAddToFlow={handleAddAssetToFlow}
+                                onProfile={handleProfileAsset}
+                                onViewMetadata={(a) => {
+                                  setMetadataAsset(a)
+                                  setShowMetadataModal(true)
+                                }}
+                              />
+                            ))}
                           </div>
                         )}
                       </div>
@@ -609,6 +651,14 @@ export function DataAssetsPanel({ onSelectAsset, onAddToFlow }: DataAssetsPanelP
                         setSelectedAsset(asset)
                         if (onSelectAsset) onSelectAsset(asset)
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setSelectedAsset(asset)
+                          if (onSelectAsset) onSelectAsset(asset)
+                        }
+                      }}
+                      tabIndex={0}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex items-start space-x-3 flex-1">

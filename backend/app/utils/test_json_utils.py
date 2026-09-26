@@ -4,6 +4,8 @@ Test JSON sanitization utilities
 
 from decimal import Decimal
 
+import pytest
+
 from app.utils.json_utils import sanitize_for_json, sanitize_result_data
 
 
@@ -52,9 +54,9 @@ def test_violation_data_sanitization():
 
     sanitized = sanitize_result_data(result_data)
 
-    assert sanitized["pass_rate"] == 95.5
+    assert sanitized["pass_rate"] == pytest.approx(95.5)
     assert sanitized["violations"][0]["gt_rule_active_enddate_empty"] is None  # NaN -> None
-    assert sanitized["violations"][0]["gt_rule_active_dates"] == 1.0
+    assert sanitized["violations"][0]["gt_rule_active_dates"] == pytest.approx(1.0)
     assert sanitized["violations"][1]["some_metric"] is None  # Inf -> None
     assert sanitized["violations"][1]["another_field"] == 42
 

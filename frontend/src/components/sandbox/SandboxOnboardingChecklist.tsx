@@ -4,7 +4,7 @@
  * Shows the guided onboarding steps for sandbox users.
  * Can be embedded on the workspace overview page.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
 import {
   completeSandboxStep,

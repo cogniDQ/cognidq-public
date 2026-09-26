@@ -89,7 +89,7 @@ export default function ConnectionDetailPage() {
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold gradient-text">{connection.name}</h1>
+          <h1 className="text-2xl font-bold gradient-text">{connection.source_name}</h1>
           <p className="text-gray-500 text-sm font-mono mt-0.5">{connection.source_type}</p>
         </div>
       </div>

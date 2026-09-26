@@ -83,8 +83,12 @@ function renderAdminLayout(role: string | null) {
 }
 
 describe('T01-04 AdminLayout — platform_admin hides DQ Hub link', () => {
-  beforeEach(() => vi.clearAllMocks())
-  afterEach(() => vi.restoreAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   it('does not render the Back to DQ Hub link for platform_admin', () => {
     renderAdminLayout('platform_admin')
@@ -94,8 +98,12 @@ describe('T01-04 AdminLayout — platform_admin hides DQ Hub link', () => {
 })
 
 describe('T01-05 AdminLayout — platform_viewer shows DQ Hub link', () => {
-  beforeEach(() => vi.clearAllMocks())
-  afterEach(() => vi.restoreAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   it('renders the Back to DQ Hub link for platform_viewer', () => {
     renderAdminLayout('platform_viewer')

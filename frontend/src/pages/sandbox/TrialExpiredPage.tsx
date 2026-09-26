@@ -4,7 +4,6 @@
  * Shown when the sandbox token has a trial_expired error.
  * The axios response interceptor redirects here on 402 trial_expired responses.
  */
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Mail } from 'lucide-react';
 

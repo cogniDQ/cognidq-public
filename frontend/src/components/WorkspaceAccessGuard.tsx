@@ -10,7 +10,7 @@
  *
  * Renders <Outlet /> when access is granted.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useParams, Navigate } from 'react-router-dom';
 import { getWorkspace } from '../services/workspace';
 import { getActorRole } from '../utils/jwt';

@@ -1866,7 +1866,6 @@ violations_df = duplicates_df.drop("_dup_count")
                 HAVING COUNT(*) > 1
             )"""
 
-        ", ".join([f'"{c}"' for c in columns])
         spark_code = f"""
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
@@ -2195,8 +2194,6 @@ violations_df = cross.filter(F.col("similarity") >= {threshold})
         if filter_expression:
             filter_where = f"WHERE ({filter_expression})"
 
-        ", ".join(key_exprs)
-
         sql = f"""
             WITH temporal_dups AS (
                 SELECT DISTINCT a.ctid as row_id
@@ -2219,7 +2216,6 @@ violations_df = cross.filter(F.col("similarity") >= {threshold})
             JOIN {table} b ON {key_join}
             WHERE {where}"""
 
-        ", ".join([f'"{c}"' for c in columns])
         spark_code = f"""
 from pyspark.sql import functions as F
 

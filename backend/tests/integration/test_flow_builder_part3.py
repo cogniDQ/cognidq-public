@@ -182,24 +182,27 @@ class TestRetryIntegration:
 
         # Patch the _call_llm method
         with patch.object(builder, "_call_llm", side_effect=mock_call_with_retry):
-            try:
-                prompt = "Check completeness of email"
-                current_flow = {"nodes": [], "connections": []}
-                available_sources = [{"id": "src1", "name": "customers", "columns": ["email"]}]
+            prompt = "Check completeness of email"
+            current_flow = {"nodes": [], "connections": []}
+            available_sources = [{"id": "src1", "name": "customers", "columns": ["email"]}]
 
+            succeeded = True
+            try:
                 await builder.generate_flow_update(
                     prompt=prompt,
                     current_flow=current_flow,
                     available_data_sources=available_sources,
                 )
-
-                # Should have retried
-                assert call_count >= 2
-                print(f"\n🔄 Retry test: Called {call_count} times (retry successful)")
-
             except Exception as e:
                 # If it still fails, that's ok for this test
+                succeeded = False
                 print(f"\n⚠️ Retry test: Exception after retries: {e}")
+
+            # Assert lives outside the try/except above so a failed retry
+            # count is never silently swallowed as a tolerated exception.
+            if succeeded:
+                assert call_count >= 2
+                print(f"\n🔄 Retry test: Called {call_count} times (retry successful)")
 
 
 class TestCacheStatistics:

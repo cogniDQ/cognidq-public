@@ -62,6 +62,13 @@ export function CandidateCard({ candidate, isSelected, rank, onSelect }: Candida
           : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
       }`}
       onClick={() => onSelect(candidate)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect(candidate);
+        }
+      }}
+      tabIndex={0}
       data-testid={`candidate-card-${rank}`}
     >
       <div className="flex items-center justify-between">

@@ -50,5 +50,5 @@ export interface ResolveResponse {
   overall_confidence: number;
   requires_disambiguation: boolean;
   resolution_evidence: Record<string, unknown>;
-  glossary_matches: GlossaryMatch[];
+  glossary_matches?: GlossaryMatch[];
 }

@@ -3,7 +3,7 @@
  *
  * Lists pending/reviewed demo requests with approve/reject actions.
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import {
   approveAdminDemoRequest,

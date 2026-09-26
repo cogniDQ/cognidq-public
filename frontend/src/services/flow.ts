@@ -72,8 +72,17 @@ export interface FlowDefinition {
 
 export interface FlowSchedule {
   enabled: boolean
+  cron?: string
   cron_expression?: string
   timezone?: string
+}
+
+export interface FlowErrorDetails {
+  error_type?: string
+  message?: string
+  traceback?: string
+  errors?: Array<Record<string, any> | string>
+  [key: string]: any
 }
 
 export interface Flow {
@@ -111,6 +120,7 @@ export interface FlowExecution {
   nodes_skipped: number
   result_summary?: Record<string, any>
   error_message?: string
+  error_details?: FlowErrorDetails
   execution_config?: Record<string, any>
   // Enhanced fields from detail endpoint
   flow_name?: string
@@ -128,6 +138,7 @@ export interface FlowNodeResult {
   execution_time_seconds?: number
   result_data?: Record<string, any>
   error_message?: string
+  error_details?: FlowErrorDetails
 }
 
 export interface FlowTemplate {

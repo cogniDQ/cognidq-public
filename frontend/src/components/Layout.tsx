@@ -142,7 +142,13 @@ export default function Layout({ children }: LayoutProps) {
                   {/* Dropdown Menu */}
                   {showUserMenu && (
                     <>
-                      <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)}></div>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowUserMenu(false)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Escape') setShowUserMenu(false);
+                        }}
+                      ></div>
                       <div className="absolute right-0 mt-2 w-56 glass rounded-lg shadow-xl border border-edge z-20">
                         <div className="px-4 py-3 border-b border-edge">
                           <p className="text-sm font-medium text-content">{user.full_name || 'User'}</p>

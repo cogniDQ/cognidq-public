@@ -122,12 +122,14 @@ export default function TenantRowActions({
           role="dialog"
           aria-modal="true"
           aria-labelledby={`delete-tenant-title-${tenantId}`}
-          onClick={closeDialog}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeDialog();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') closeDialog();
+          }}
         >
-          <div
-            className="w-full max-w-md rounded-lg border border-red-800/40 bg-dark-900 shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="w-full max-w-md rounded-lg border border-red-800/40 bg-dark-900 shadow-xl">
             <div className="flex items-start gap-3 px-5 pt-5 pb-3">
               <div className="flex-shrink-0 mt-0.5 text-red-500">
                 <AlertTriangle className="w-5 h-5" aria-hidden="true" />

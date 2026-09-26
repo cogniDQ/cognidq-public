@@ -5,6 +5,7 @@ Singleton manager for Spark session lifecycle across all check executions.
 
 import logging
 import os
+import tempfile
 import threading
 from typing import Optional
 
@@ -103,11 +104,15 @@ class SparkSessionManager:
         logger.info(f"Set PYSPARK_DRIVER_PYTHON={pyspark_driver_python}")
 
         # Create event log directory if it doesn't exist
-        event_log_dir = "/tmp/spark-events"
+        event_log_dir = os.path.join(tempfile.gettempdir(), "spark-events")
         try:
             import pathlib
 
-            pathlib.Path(event_log_dir).mkdir(parents=True, exist_ok=True)
+            event_log_path = pathlib.Path(event_log_dir)
+            if event_log_path.is_symlink():
+                raise RuntimeError(f"Event log directory {event_log_dir} must not be a symlink")
+            event_log_path.mkdir(parents=True, exist_ok=True)
+            os.chmod(event_log_path, 0o700)
             logger.info(f"✅ Event log directory ensured: {event_log_dir}")
         except Exception as e:
             logger.warning(f"⚠️ Could not create event log directory {event_log_dir}: {e}")

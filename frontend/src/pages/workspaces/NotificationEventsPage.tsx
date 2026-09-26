@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Bell, RefreshCw, AlertTriangle, CheckCircle2, Clock, RotateCcw, X } from 'lucide-react';
 import EmptyState from '../../components/common/EmptyState';
+import { useTenantScopedPath } from '../../hooks/useTenantScopedPath';
 
 import {
   listNotificationEvents,
@@ -57,6 +58,7 @@ const REFRESH_INTERVAL = 30_000;
 
 export default function NotificationEventsPage() {
   const { workspace_id } = useParams<{ workspace_id: string }>();
+  const { wsPath } = useTenantScopedPath();
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [page, setPage] = useState(0); // offset-based: page * PAGE_SIZE
   // F4 — detail drawer
@@ -294,12 +296,16 @@ export default function NotificationEventsPage() {
       {selectedEvent && (
         <div
           className="fixed inset-0 z-50 flex justify-end bg-black/50"
-          onClick={() => setSelectedEvent(null)}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedEvent(null)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setSelectedEvent(null)
+          }}
           data-testid="notification-detail-overlay"
         >
           <div
             className="h-full w-full max-w-xl overflow-y-auto border-l border-gray-700 bg-gray-950 p-6 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
             data-testid="notification-detail-drawer"
           >
             <div className="mb-4 flex items-center justify-between">

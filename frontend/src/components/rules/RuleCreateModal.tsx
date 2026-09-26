@@ -353,13 +353,15 @@ export default function RuleFormModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose()
+      }}
       data-testid="rule-create-modal"
     >
-      <div
-        className="bg-dark-900 border border-dark-700 rounded-xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="bg-dark-900 border border-dark-700 rounded-xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-dark-700 flex-shrink-0">
           <div>

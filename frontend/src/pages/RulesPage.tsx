@@ -45,6 +45,7 @@ import {
   confirmProposal,
   rejectProposal,
   type Proposal,
+  type ProposalAdjustment,
 } from '@/services/proposalService'
 import RuleCreateModal from '@/components/rules/RuleCreateModal'
 import RuleExecutionsModal from '@/components/rules/RuleExecutionsModal'
@@ -107,8 +108,7 @@ export default function RulesPage() {
     if (fromUrl === 'proposals' && activeTab !== 'proposals') {
       setActiveTab('proposals')
     } else if ((fromUrl === null || fromUrl === 'rules') && activeTab !== 'rules') {
-      // Don't fight the executions deep-link path (handled below)
-      if (fromUrl !== 'executions') setActiveTab('rules')
+      setActiveTab('rules')
     }
      
   }, [searchParams])

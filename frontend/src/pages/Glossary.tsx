@@ -340,7 +340,7 @@ export default function Glossary() {
                   </label>
                   <input
                     type="text"
-                    value={newTerm.business_name}
+                    value={newTerm.business_name ?? ''}
                     onChange={(e) => setNewTerm({ ...newTerm, business_name: e.target.value })}
                     className="input w-full"
                     placeholder="Employee Status"
@@ -353,7 +353,7 @@ export default function Glossary() {
                   </label>
                   <input
                     type="text"
-                    value={newTerm.technical_name}
+                    value={newTerm.technical_name ?? ''}
                     onChange={(e) => setNewTerm({ ...newTerm, technical_name: e.target.value })}
                     className="input w-full"
                     placeholder="status"
@@ -368,7 +368,7 @@ export default function Glossary() {
                     Data Type
                   </label>
                   <select
-                    value={newTerm.data_type}
+                    value={newTerm.data_type ?? ''}
                     onChange={(e) => setNewTerm({ ...newTerm, data_type: e.target.value })}
                     className="input w-full"
                   >
@@ -386,7 +386,7 @@ export default function Glossary() {
                   </label>
                   <input
                     type="text"
-                    value={newTerm.domain}
+                    value={newTerm.domain ?? ''}
                     onChange={(e) => setNewTerm({ ...newTerm, domain: e.target.value })}
                     className="input w-full"
                     placeholder="HR, Finance, Customer..."
@@ -400,7 +400,7 @@ export default function Glossary() {
                   Description *
                 </label>
                 <textarea
-                  value={newTerm.definition}
+                  value={newTerm.definition ?? ''}
                   onChange={(e) => setNewTerm({ ...newTerm, definition: e.target.value })}
                   className="input w-full"
                   rows={3}
@@ -430,7 +430,7 @@ export default function Glossary() {
                 </label>
                 <input
                   type="text"
-                  value={newTerm.owner}
+                  value={newTerm.owner ?? ''}
                   onChange={(e) => setNewTerm({ ...newTerm, owner: e.target.value })}
                   className="input w-full"
                   placeholder="HR Department"

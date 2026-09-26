@@ -45,7 +45,7 @@ export default function EditConnectionPage() {
 
   useEffect(() => {
     if (connection) {
-      setName(connection.name);
+      setName(connection.source_name);
       setDescription(connection.description ?? '');
       setEnvironment(connection.environment);
     }

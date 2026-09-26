@@ -145,6 +145,13 @@ export default function WorkspaceAssignmentPanel({
                 key={ws.workspace_id}
                 className={`flex items-center justify-between py-3 px-1 ${isAdmin ? 'cursor-pointer hover:bg-dark-800/50 rounded-lg transition-colors' : ''}`}
                 onClick={() => toggle(ws.workspace_id)}
+                onKeyDown={(e) => {
+                  if (isAdmin && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    toggle(ws.workspace_id);
+                  }
+                }}
+                tabIndex={isAdmin ? 0 : undefined}
                 data-testid={`ws-row-${ws.workspace_id}`}
               >
                 <div className="flex items-center gap-3">

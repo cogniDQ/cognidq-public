@@ -58,7 +58,7 @@ const ROLE_DESCRIPTIONS: Record<WorkspaceRoleName, string> = {
 
 function groupByResource(perms: string[]): Record<string, string[]> {
   const grouped: Record<string, string[]> = {};
-  for (const p of [...perms].sort()) {
+  for (const p of [...perms].sort((a, b) => a.localeCompare(b))) {
     const [resource] = p.split(':');
     (grouped[resource] ??= []).push(p);
   }

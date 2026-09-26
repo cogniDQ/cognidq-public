@@ -30,7 +30,7 @@ Y_SPACING = 150
 
 def _uid(prefix: str = "node") -> str:
     ts = int(time.time() * 1000)
-    rand = "".join(random.choices(string.ascii_lowercase + string.digits, k=6))
+    rand = "".join(random.SystemRandom().choices(string.ascii_lowercase + string.digits, k=6))
     return f"{prefix}_{ts}_{rand}"
 
 

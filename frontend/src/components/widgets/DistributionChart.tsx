@@ -53,7 +53,7 @@ export const DistributionChart: React.FC<DistributionChartProps> = ({
               outerRadius={100}
               label
             >
-              {data.map((entry, index) => (
+              {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
               ))}
             </Pie>

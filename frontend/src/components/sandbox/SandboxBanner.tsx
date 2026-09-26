@@ -4,7 +4,7 @@
  * Shown at the top of the workspace layout when the user is in a sandbox.
  * Displays remaining days + extension request button.
  */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AlertTriangle, Clock, RefreshCw, X } from 'lucide-react';
 import {
   getSandboxMe,

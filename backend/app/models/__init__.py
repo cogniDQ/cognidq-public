@@ -6,11 +6,11 @@ string-based relationship() targets regardless of which entry point
 (API, worker, script) configures the mappers first.
 """
 
+from .access_profile import AccessProfile  # noqa: F401
+from .access_token import AccessToken  # noqa: F401 — required for User mapper config
 from .alert_channel import AlertChannel
 from .alert_rule import AlertRule
 from .audit_log import AuditLog
-from .access_profile import AccessProfile  # noqa: F401
-from .access_token import AccessToken  # noqa: F401 — required for User mapper config
 from .dashboard import Dashboard  # noqa: F401
 from .datasource import DataSource  # noqa: F401
 from .demo_request import DemoRequest  # noqa: F401

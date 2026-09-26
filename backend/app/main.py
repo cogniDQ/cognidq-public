@@ -136,7 +136,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Configure CORS
+# F001 — Correlation ID + Structured Request Logging (TDD §8.2)
+app.add_middleware(CorrelationIdMiddleware)
+
+# Redis-backed rate limiting (global default + stricter per-endpoint limits
+# on sensitive auth routes — see app/api/v1/endpoints/auth.py).
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+# CORS must be the last middleware added so it ends up outermost in the
+# stack, guaranteeing CORS headers are attached even to responses/errors
+# produced by the other middleware (e.g. rate-limit 429s).
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
@@ -144,16 +154,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# F001 — Correlation ID + Structured Request Logging (TDD §8.2)
-# Must be added AFTER CORSMiddleware so the correlation ID header is present
-# in all responses, including CORS preflight responses.
-app.add_middleware(CorrelationIdMiddleware)
-
-# Redis-backed rate limiting (global default + stricter per-endpoint limits
-# on sensitive auth routes — see app/api/v1/endpoints/auth.py).
-app.state.limiter = limiter
-app.add_middleware(SlowAPIMiddleware)
 
 # Register F001 structured error handler
 app.add_exception_handler(TenantAPIError, tenant_api_error_handler)  # type: ignore[arg-type]
@@ -227,10 +227,12 @@ async def global_exception_handler(request, exc):
 if __name__ == "__main__":
     import uvicorn
 
+    # Dev-only direct entrypoint; production uses the Dockerfile's uvicorn
+    # CMD with an explicit --host. Default here is loopback-only, not 0.0.0.0.
     uvicorn.run(
         "app.main:app",
-        host="0.0.0.0",
-        port=8000,
+        host=os.getenv("UVICORN_HOST", "127.0.0.1"),
+        port=int(os.getenv("UVICORN_PORT", "8000")),
         reload=settings.DEBUG,
         log_level=settings.LOG_LEVEL.lower(),
     )

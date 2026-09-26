@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import {
   Sparkles,
   Share2,
@@ -756,7 +756,7 @@ function Step({
   title,
   body,
 }: {
-  icon?: React.ComponentType<{ className?: string; strokeWidth?: number }>
+  icon?: ComponentType<{ className?: string; strokeWidth?: string | number }>
   custom?: ReactNode
   title: string
   body: string

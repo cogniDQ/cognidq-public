@@ -182,7 +182,7 @@ const DQHubInner: React.FC = () => {
           <div className="flex items-center gap-3">
             <ContextHeader />
             <ThemeToggle />
-            <NotificationBell workspaceId={currentWorkspaceId} />
+            <NotificationBell workspaceId={currentWorkspaceId ?? null} />
             <RoleBadge workspaceId={currentWorkspaceId} />
           </div>
         </div>

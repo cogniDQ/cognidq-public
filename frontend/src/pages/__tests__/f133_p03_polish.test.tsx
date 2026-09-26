@@ -54,7 +54,6 @@ import { useNavigationMenu } from '@/hooks/useNavigationMenu'
 import Home from '@/pages/Home'
 import Register from '@/pages/auth/Register'
 import CreateConnectionPage from '@/pages/connections/CreateConnectionPage'
-import WorkspaceSelector from '@/components/WorkspaceSelector'
 import DQHubInner from '@/pages/DQHub'
 import { ThemeProvider } from '@/theme/ThemeContext'
 
@@ -102,7 +101,9 @@ describe('T03-02 CreateConnectionPage — Cancel button', () => {
       loading: false,
     })
   })
-  afterEach(() => vi.restoreAllMocks())
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   const renderPage = () =>
     render(
@@ -126,17 +127,6 @@ describe('T03-02 CreateConnectionPage — Cancel button', () => {
 })
 
 // ── T03-03 Register friendly message for reserved TLD ────────────────────────
-
-// Reuse same mock pattern as existing Register tests
-function setupRegister(role = null) {
-  mockUseAuth.mockReturnValue({ user: null, loading: false, register: vi.fn() })
-}
-
-async function submitRegisterWithError(errorMsg: string) {
-  const { register } = mockUseAuth()
-  // Mock the registerUser function to throw
-  const { registerUser } = await vi.importMock('@/services/authService')
-}
 
 describe('T03-03 Register — reserved TLD friendly message', () => {
   beforeEach(() => {
@@ -196,13 +186,15 @@ describe('T03-04 Register — non-TLD raw message', () => {
 // ── T03-05 WorkspaceSelector — shows when workspaces empty but not loading ───
 
 describe('T03-05 WorkspaceSelector — visible when workspaces empty and not loading', () => {
+  const workspaceState = {
+    currentWorkspace: undefined,
+    workspaces: [],
+    switchWorkspace: vi.fn(),
+    loading: false,
+  }
+
   beforeEach(() => {
-    mockUseWorkspace.mockReturnValue({
-      currentWorkspace: undefined,
-      workspaces: [],
-      switchWorkspace: vi.fn(),
-      loading: false,
-    })
+    mockUseWorkspace.mockReturnValue(workspaceState)
   })
 
   it('renders the selector even with empty workspaces list', () => {
@@ -210,7 +202,7 @@ describe('T03-05 WorkspaceSelector — visible when workspaces empty and not loa
     vi.unmock('@/components/WorkspaceSelector')
     // We test the guard condition logically
     // loading=false, workspaces=[] — the component should NOT return null
-    const { loading, workspaces } = mockUseWorkspace()
+    const { loading, workspaces } = workspaceState
     expect(loading || workspaces.length === 0).toBe(true) // old guard was true → hidden
     expect(loading).toBe(false) // new guard: only hide on loading
   })
