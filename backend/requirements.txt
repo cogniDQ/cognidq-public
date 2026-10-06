@@ -27,7 +27,7 @@ langchain>=0.1.0,<0.2.0
 langchain-openai>=0.0.5,<0.1.0
 langchain-core>=0.1.0,<0.2.0
 langgraph>=0.0.20,<0.1.0
-sentence-transformers==2.3.1
+sentence-transformers==5.6.0
 # chromadb removed: unused (no imports anywhere in app/) and carries
 # unpatched critical CVEs (CVE-2026-45833, CVE-2026-45830) with no fixed
 # version available upstream. Re-add only with a patched release.
