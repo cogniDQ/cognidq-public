@@ -18,7 +18,9 @@ Routes (all under /api/v1/tenants/{tenant_id}/glossary):
 
 Auth: JWT required.
   Write: require_tenant_write_access (platform_admin OR tenant admin of path)
-  Read:  require_tenant_read_access  (platform_admin/viewer OR tenant admin of path)
+  Read:  require_tenant_member_read_access (platform_admin/viewer OR tenant
+         admin of path OR any workspace member of the tenant — the glossary
+         is surfaced inside the workspace shell to every workspace role)
 """
 
 from __future__ import annotations
@@ -35,7 +37,7 @@ from sqlalchemy.orm import Session
 from app.api.v1.dependencies.tenant_auth import (
     ActorContext,
     TenantAPIError,
-    require_tenant_read_access,
+    require_tenant_member_read_access,
     require_tenant_write_access,
     validate_uuid_path_param,
 )
@@ -132,7 +134,7 @@ async def list_terms(
     page_size: int = Query(20, ge=1, le=200),
     search: str | None = Query(None),
     domain: str | None = Query(None),
-    actor: ActorContext = Depends(require_tenant_read_access()),
+    actor: ActorContext = Depends(require_tenant_member_read_access()),
     db: Session = Depends(get_db),
 ):
     tid = _parse_tenant_id(tenant_id)
@@ -252,7 +254,7 @@ async def import_csv(
 @router.get("/export", status_code=status.HTTP_200_OK)
 async def export_csv(
     tenant_id: str,
-    actor: ActorContext = Depends(require_tenant_read_access()),
+    actor: ActorContext = Depends(require_tenant_member_read_access()),
     db: Session = Depends(get_db),
 ):
     tid = _parse_tenant_id(tenant_id)
@@ -273,7 +275,7 @@ async def export_csv(
 async def get_term(
     tenant_id: str,
     term_id: str,
-    actor: ActorContext = Depends(require_tenant_read_access()),
+    actor: ActorContext = Depends(require_tenant_member_read_access()),
     db: Session = Depends(get_db),
 ):
     tid = _parse_tenant_id(tenant_id)
@@ -367,7 +369,7 @@ async def delete_term(
 async def get_term_lineage(
     tenant_id: str,
     term_id: str,
-    actor: ActorContext = Depends(require_tenant_read_access()),
+    actor: ActorContext = Depends(require_tenant_member_read_access()),
     db: Session = Depends(get_db),
 ):
     """Resolve the linked asset IDs on a term against `control.metadata_asset_index`
