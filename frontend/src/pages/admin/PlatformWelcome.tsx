@@ -1,9 +1,9 @@
 /**
  * PlatformWelcome — landing page for platform operators after login.
  *
- * Replaces the bare tenants table as the post-login destination: offers
- * quick actions and direct entry points into workspaces so a first-time
- * admin can explore the product instead of facing a CRUD screen.
+ * Platform admin has no standing access to client workspaces — this page
+ * is the management console only. Any workspace access happens through an
+ * active, tenant-admin-issued support access grant (see /admin/support-access).
  */
 import { Link } from 'react-router-dom';
 import {
@@ -12,13 +12,13 @@ import {
   Building2,
   ArrowRight,
   ExternalLink,
-  LayoutDashboard,
+  ShieldCheck,
   Loader2,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../../contexts/AuthContext';
-import { listWorkspaces } from '../../services/workspace';
-import { wsPath } from '../../utils/paths';
+import { listActiveGrantsForAdmin } from '../../services/supportAccessService';
+import { wsPath, tenantPath } from '../../utils/paths';
 
 const quickActions = [
   {
@@ -26,6 +26,12 @@ const quickActions = [
     title: 'Tenants',
     description: 'Create, provision, and manage platform tenants.',
     to: '/admin/tenants',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Support Access',
+    description: 'See every tenant where you currently have temporary access.',
+    to: '/admin/support-access',
   },
   {
     icon: Building2,
@@ -44,13 +50,13 @@ const quickActions = [
 export default function PlatformWelcome() {
   const { user } = useAuth();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ['platform-welcome-workspaces'],
-    queryFn: () => listWorkspaces({ page_size: 6, sort_by: 'updated_at', sort_dir: 'desc' }),
+  const { data: activeGrants, isLoading } = useQuery({
+    queryKey: ['support-access-grants', 'active'],
+    queryFn: listActiveGrantsForAdmin,
     staleTime: 30_000,
   });
 
-  const workspaces = data?.data ?? [];
+  const grants = activeGrants ?? [];
   const firstName = user?.full_name?.split(' ')[0] || 'there';
 
   return (
@@ -58,45 +64,51 @@ export default function PlatformWelcome() {
       <div>
         <h1 className="text-3xl font-bold text-white">Welcome, {firstName}</h1>
         <p className="mt-2 text-gray-400">
-          You are signed in as a platform operator. Jump into a workspace to see
-          data quality in action, or manage the platform below.
+          You are signed in as a platform operator. This is the management console —
+          client workspaces are only reachable with an active support access grant.
         </p>
       </div>
 
-      {/* Workspace entry points */}
+      {/* Active support access */}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-            <LayoutDashboard className="w-5 h-5 text-primary-400" />
-            Explore a workspace
+            <ShieldCheck className="w-5 h-5 text-primary-400" />
+            Active support access
           </h2>
+          <Link to="/admin/support-access" className="text-sm text-primary-400 hover:text-primary-300">
+            View all →
+          </Link>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center h-32">
             <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
           </div>
-        ) : workspaces.length === 0 ? (
+        ) : grants.length === 0 ? (
           <div className="glass rounded-lg p-6 text-gray-400">
-            No workspaces yet. Create a tenant, then provision a workspace —
-            or run <code className="text-primary-400">make seed</code> to load the demo
-            workspace.
+            No active grants. A tenant admin can grant you temporary access from their
+            tenant's Support Access page when they need help troubleshooting.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {workspaces.map((ws) => (
+            {grants.map((g) => (
               <Link
-                key={ws.workspace_id}
-                to={wsPath(ws.tenant_id ?? null, ws.workspace_id, '/overview')}
+                key={g.id}
+                to={
+                  g.workspace_id
+                    ? wsPath(g.tenant_id, g.workspace_id, '/overview')
+                    : tenantPath(g.tenant_id)
+                }
                 className="glass p-5 rounded-lg hover:border-primary-500/50 transition-all group"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg text-gray-200 mb-1 truncate">
-                      {ws.workspace_name}
+                      {g.tenant_name ?? g.tenant_id}
                     </h3>
                     <p className="text-sm text-gray-500 truncate">
-                      {ws.tenant_name ? `${ws.tenant_name} · ` : ''}
-                      {ws.workspace_slug}
+                      {g.workspace_name ?? 'Whole tenant'} · expires{' '}
+                      {new Date(g.expires_at).toLocaleTimeString()}
                     </p>
                   </div>
                   <ArrowRight className="w-5 h-5 text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all flex-shrink-0" />

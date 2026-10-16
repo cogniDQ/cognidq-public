@@ -14,6 +14,9 @@ import {
   getSandboxOnboarding,
   type OnboardingStep,
 } from '../services/sandboxUserService';
+import { useWorkspace } from '../contexts/WorkspaceContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useTenantScopedPath } from '../hooks/useTenantScopedPath';
 
 interface WizardStep {
   id: string;
@@ -24,41 +27,58 @@ interface WizardStep {
   cta: { label: string; to: string };
 }
 
-const STEPS: WizardStep[] = [
-  {
-    id: 'connect',
-    matches: ['connect_source', 'add_connection', 'connection'],
-    title: 'Connect a data source',
-    description:
-      'Bring in a Postgres, Snowflake, BigQuery, or file source. Read-only by default — we only fetch metadata and the rows your rules need.',
-    icon: Database,
-    cta: { label: 'Add connection', to: '/hub' },
-  },
-  {
-    id: 'glossary',
-    matches: ['import_glossary', 'glossary', 'business_glossary'],
-    title: 'Import a business glossary',
-    description:
-      'A glossary teaches CogniDQ your terms. The NL rule builder uses it to disambiguate "customer", "order", and "active".',
-    icon: BookOpen,
-    cta: { label: 'Open glossary', to: '/hub' },
-  },
-  {
-    id: 'rule',
-    matches: ['first_rule', 'create_rule', 'rule'],
-    title: 'Write your first rule',
-    description:
-      'Type a sentence like "every order must have a valid customer". We will generate the check, the SQL, and the expected outcome.',
-    icon: Sparkles,
-    cta: { label: 'Open rule builder', to: '/hub' },
-  },
-];
+function useWizardSteps(): WizardStep[] {
+  const { currentWorkspace } = useWorkspace();
+  const { user } = useAuth();
+  const { wsPath, tenantPath } = useTenantScopedPath();
+  const workspaceId = currentWorkspace?.workspace_id;
+
+  const canManageConnections =
+    user?.platform_role === 'tenant_admin' || user?.platform_role === 'platform_admin';
+
+  const connectTo = canManageConnections
+    ? tenantPath('/connections')
+    : workspaceId
+      ? wsPath(workspaceId, '/datasets')
+      : '/hub';
+
+  return [
+    {
+      id: 'connect',
+      matches: ['connect_source', 'add_connection', 'connection'],
+      title: 'Connect a data source',
+      description:
+        'Bring in a Postgres, Snowflake, BigQuery, or file source. Read-only by default — we only fetch metadata and the rows your rules need.',
+      icon: Database,
+      cta: { label: canManageConnections ? 'Add connection' : 'View datasets', to: connectTo },
+    },
+    {
+      id: 'glossary',
+      matches: ['import_glossary', 'glossary', 'business_glossary'],
+      title: 'Import a business glossary',
+      description:
+        'A glossary teaches CogniDQ your terms. The NL rule builder uses it to disambiguate "customer", "order", and "active".',
+      icon: BookOpen,
+      cta: { label: 'Open glossary', to: workspaceId ? wsPath(workspaceId, '/glossary') : '/hub' },
+    },
+    {
+      id: 'rule',
+      matches: ['first_rule', 'create_rule', 'rule'],
+      title: 'Write your first rule',
+      description:
+        'Type a sentence like "every order must have a valid customer". We will generate the check, the SQL, and the expected outcome.',
+      icon: Sparkles,
+      cta: { label: 'Open rule builder', to: workspaceId ? wsPath(workspaceId, '/nl-rule-builder') : '/hub' },
+    },
+  ];
+}
 
 function matchStep(wizard: WizardStep, api: OnboardingStep[]): OnboardingStep | undefined {
   return api.find((s) => wizard.matches.some((m) => s.step_id.toLowerCase().includes(m)));
 }
 
 export default function OnboardingWizardPage() {
+  const STEPS = useWizardSteps();
   const [apiSteps, setApiSteps] = useState<OnboardingStep[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

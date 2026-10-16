@@ -44,6 +44,7 @@ from app.api.v1.endpoints import (
     rule_templates,
     rules,
     sandbox_user,
+    support_access,
     teams,
     tenant_connections,
     tenant_glossary,
@@ -126,3 +127,4 @@ api_router.include_router(admin_demo_requests.router)  # F134 — Demo Sandbox a
 api_router.include_router(admin_demo_templates.router)  # F134 — Demo Template registry
 api_router.include_router(admin_sandboxes.router)  # F134 — Admin sandbox management
 api_router.include_router(sandbox_user.router)  # F134 — Sandbox user endpoints
+api_router.include_router(support_access.router)  # Ephemeral platform_admin support-access grants

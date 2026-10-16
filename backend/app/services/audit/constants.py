@@ -26,6 +26,7 @@ VALID_ENTITY_TYPES: frozenset[str] = frozenset(
         "team",
         "team_membership",
         "user_profile",
+        "support_access_grant",
     }
 )
 
@@ -104,6 +105,9 @@ VALID_ACTION_TYPES: frozenset[str] = frozenset(
         # User
         "user_profile_updated",
         "user_password_changed",
+        # Support access (ephemeral platform_admin grants)
+        "support_access_granted",
+        "support_access_revoked",
     }
 )
 

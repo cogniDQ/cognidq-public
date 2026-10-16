@@ -17,6 +17,7 @@ import { getRealActorRole, getActorId, getTenantId } from '../utils/jwt';
 import { FIXED_ROLE_PERMISSIONS, type WorkspaceRoleName } from '../services/workspaceRoles';
 import { useWorkspace } from '../contexts/WorkspaceContext';
 import { useWorkspacePermissions } from './useWorkspacePermissions';
+import { useActiveSupportGrant } from './useActiveSupportGrant';
 import { NAV_SECTIONS, type NavSection } from '../config/navigationConfig';
 
 interface UseNavigationMenuResult {
@@ -59,13 +60,24 @@ export function useNavigationMenu(workspaceId?: string): UseNavigationMenuResult
     return FIXED_ROLE_PERMISSIONS[wsRoleName as WorkspaceRoleName] ?? new Set<string>();
   }, [wsRoleName]);
 
+  // Platform operators no longer have standing access to workspace content —
+  // only while a tenant-admin-issued support access grant is active for the
+  // workspace/tenant currently in view.
+  const { hasActiveGrantHere } = useActiveSupportGrant(isPlatformOp, effectiveTenantId, effectiveWorkspaceId);
+
   const sections: NavSection[] = useMemo(() => {
     const result: NavSection[] = [];
 
     for (const section of NAV_SECTIONS) {
       // Section visibility gate
       if (section.visibility === 'platform' && !isPlatformOp) continue;
-      if (section.visibility === 'workspace' && !effectiveWorkspaceId) continue;
+      // Workspace section: hidden entirely for platform operators unless they
+      // currently hold an active support access grant for this workspace —
+      // this is client content, not a management-console surface.
+      if (section.visibility === 'workspace') {
+        if (!effectiveWorkspaceId) continue;
+        if (isPlatformOp && !hasActiveGrantHere) continue;
+      }
       // Tenant section: shown only for tenant_admin (and platform_admin preview).
       if (section.visibility === 'tenant' && !(isTenantAdmin || platformRole === 'platform_admin')) continue;
 
@@ -79,8 +91,9 @@ export function useNavigationMenu(workspaceId?: string): UseNavigationMenuResult
         }
         if (item.requiredPermission) {
           if (workspacePermissions.has(item.requiredPermission)) return true;
-          // Platform operators can see all workspace-scoped items
-          if (isPlatformOp) return true;
+          // Platform operators only see workspace-scoped items while an
+          // active support access grant covers this workspace.
+          if (isPlatformOp && hasActiveGrantHere) return true;
           // Tenant admins see all workspace-scoped items in their tenant
           if (isTenantAdmin) return true;
           return false;

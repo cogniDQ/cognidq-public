@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { WorkspaceProvider } from './contexts/WorkspaceContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminGuard from './components/admin/AdminGuard'
@@ -70,10 +71,9 @@ import PrivacyPage from './pages/public/PrivacyPage'
 import StatusPage from './pages/public/StatusPage'
 import ContactPage from './pages/public/ContactPage'
 import OnboardingWizardPage from './pages/OnboardingWizardPage'
-import MarketingKit from './pages/marketing/MarketingKit'
-import MarketingAssetPage from './pages/marketing/MarketingAssetPage'
 import AdminDemoRequestsPage from './pages/admin/sandbox/AdminDemoRequestsPage'
 import AdminSandboxesPage from './pages/admin/sandbox/AdminSandboxesPage'
+import AdminSupportAccessPage from './pages/admin/AdminSupportAccessPage'
 import TrialExpiredPage from './pages/sandbox/TrialExpiredPage'
 import TenantAdminGuard from './components/tenant/TenantAdminGuard'
 import TenantAdminRedirect from './components/tenant/TenantAdminRedirect'
@@ -81,6 +81,7 @@ import TenantConnectionsRedirect from './components/TenantConnectionsRedirect'
 import TenantAdminDashboard from './pages/tenant/TenantAdminDashboard'
 import TenantMembersPage from './pages/tenant/TenantMembersPage'
 import TenantAssignmentsPage from './pages/tenant/TenantAssignmentsPage'
+import TenantSupportAccessPage from './pages/tenant/TenantSupportAccessPage'
 import AcceptInvitationPage from './pages/auth/AcceptInvitationPage'
 import SetPasswordPage from './pages/auth/SetPasswordPage'
 
@@ -106,27 +107,17 @@ function App() {
 
             <Route path="/onboarding" element={
               <ProtectedRoute>
-                <Layout>
-                  <OnboardingWizardPage />
-                </Layout>
+                <WorkspaceProvider>
+                  <Layout>
+                    <OnboardingWizardPage />
+                  </Layout>
+                </WorkspaceProvider>
               </ProtectedRoute>
             } />
 
             <Route path="/" element={
               <Layout>
                 <Home />
-              </Layout>
-            } />
-
-            {/* Marketing graphics kit (public) */}
-            <Route path="/marketing" element={
-              <Layout>
-                <MarketingKit />
-              </Layout>
-            } />
-            <Route path="/marketing/:slug" element={
-              <Layout>
-                <MarketingAssetPage />
               </Layout>
             } />
 
@@ -198,6 +189,13 @@ function App() {
               <AdminGuard>
                 <AdminLayout>
                   <AdminSandboxesPage />
+                </AdminLayout>
+              </AdminGuard>
+            } />
+            <Route path="/admin/support-access" element={
+              <AdminGuard>
+                <AdminLayout>
+                  <AdminSupportAccessPage />
                 </AdminLayout>
               </AdminGuard>
             } />
@@ -286,6 +284,7 @@ function App() {
               <Route path="t/:tenant_id" element={<TenantAdminGuard><TenantAdminDashboard /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/members" element={<TenantAdminGuard><TenantMembersPage /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/assignments" element={<TenantAdminGuard><TenantAssignmentsPage /></TenantAdminGuard>} />
+              <Route path="t/:tenant_id/support-access" element={<TenantAdminGuard><TenantSupportAccessPage /></TenantAdminGuard>} />
               {/* Connections are tenant-scoped resources managed by tenant_admin */}
               <Route path="t/:tenant_id/connections" element={<TenantAdminGuard><ConnectionListPage /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/connections/new" element={<TenantAdminGuard><CreateConnectionPage /></TenantAdminGuard>} />

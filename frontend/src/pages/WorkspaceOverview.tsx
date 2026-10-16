@@ -126,7 +126,12 @@ const WorkspaceOverview: React.FC = () => {
       </div>
 
       <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-xl p-8 mt-12">
-        <h2 className="text-2xl font-bold text-content mb-4">Getting Started</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-content mb-4">Getting Started</h2>
+          <Link to="/onboarding" className="text-sm font-semibold text-purple-400 hover:underline">
+            View as a full guide →
+          </Link>
+        </div>
         <div className="space-y-3 text-content-muted">
           <div className="flex items-start space-x-3">
             <span className="text-purple-400 font-bold">1.</span>
@@ -135,7 +140,15 @@ const WorkspaceOverview: React.FC = () => {
                 Connect your first data source to start monitoring data quality
               </Link>
             ) : (
-              <span>Ask your tenant admin to connect a data source and assign it to this workspace</span>
+              <span>
+                <Link
+                  to={workspaceId ? wsPath(workspaceId, '/datasets') : '/hub'}
+                  className="hover:text-content hover:underline"
+                >
+                  View datasets assigned to this workspace
+                </Link>
+                {' '}— ask your tenant admin to connect a data source if none are listed yet
+              </span>
             )}
           </div>
           <div className="flex items-start space-x-3">

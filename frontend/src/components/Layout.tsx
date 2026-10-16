@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Code2, Github, User, LogOut, Settings, ChevronDown, Image } from 'lucide-react'
+import { Code2, Github, User, LogOut, Settings, ChevronDown } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import RoleBadge from './RoleBadge'
@@ -84,18 +84,6 @@ export default function Layout({ children }: LayoutProps) {
                   Go to DQ Hub
                 </Link>
               )}
-
-              <Link
-                to="/marketing"
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ml-2 ${
-                  location.pathname.startsWith('/marketing')
-                    ? 'bg-brand-soft text-brand font-medium'
-                    : 'text-content-muted hover:text-content hover:bg-surface-overlay'
-                }`}
-              >
-                <Image className="w-4 h-4" />
-                <span className="hidden sm:inline">Marketing Kit</span>
-              </Link>
 
               <Link
                 to="/request-demo"

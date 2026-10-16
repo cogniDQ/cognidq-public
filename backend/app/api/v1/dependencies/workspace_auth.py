@@ -18,6 +18,36 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 
 
+def _require_support_grant(request: Request, tenant_id: UUID | str | None = None) -> None:
+    """Platform admin/viewer no longer have standing access to workspace or
+    tenant content — only a tenant_admin-issued support-access grant allows
+    it. Call this at every point that used to unconditionally bypass RBAC
+    for ``platform_admin``/``platform_viewer``.
+
+    Resolves ``workspace_id`` from the route's path params (every guard this
+    is called from is mounted on a ``/workspaces/{workspace_id}/...`` route).
+    Raises HTTP 403 if no active grant covers this tenant/workspace.
+    """
+    from app.models.database import get_db as _get_db
+    from app.services.support_access.service import has_active_grant
+
+    workspace_id = request.path_params.get("workspace_id")
+    db_gen = _get_db()
+    db = next(db_gen)
+    try:
+        if not has_active_grant(db, tenant_id=tenant_id, workspace_id=workspace_id):
+            raise InsufficientPermissionsError(
+                "This requires an active support access grant from the tenant admin. "
+                "Ask the tenant admin to grant temporary support access, or check your "
+                "active grants in the admin console."
+            )
+    finally:
+        try:
+            next(db_gen, None)
+        except StopIteration:
+            pass
+
+
 # ---------------------------------------------------------------------------
 # Workspace Actor Context (with tenant_id from JWT)
 # ---------------------------------------------------------------------------
@@ -508,6 +538,9 @@ async def verify_audit_log_actor(
             "Only Workspace Administrators and Platform Operators may view audit logs."
         )
 
+    if actor.actor_role in PLATFORM_OPERATOR_ROLES:
+        _require_support_grant(request, tenant_id=actor.tenant_id)
+
     logger.debug(
         "verify_audit_log_actor: access granted actor_id=%s role=%s tenant_id=%s",
         actor.actor_id,
@@ -575,6 +608,9 @@ async def verify_workspace_settings_read_actor(
             "Your role does not have permission to read workspace settings."
         )
 
+    if actor.actor_role in PLATFORM_OPERATOR_ROLES:
+        _require_support_grant(request, tenant_id=actor.tenant_id)
+
     logger.debug(
         "verify_workspace_settings_read_actor: granted actor_id=%s role=%s",
         actor.actor_id,
@@ -623,6 +659,9 @@ async def verify_workspace_settings_write_actor(
         raise InsufficientPermissionsError(
             "Only Workspace Administrators and Platform Admins may update workspace settings."
         )
+
+    if actor.actor_role == "platform_admin":
+        _require_support_grant(request, tenant_id=actor.tenant_id)
 
     logger.debug(
         "verify_workspace_settings_write_actor: granted actor_id=%s role=%s",
@@ -679,10 +718,19 @@ def require_workspace_permission(action: str):
         request.state.workspace_actor = actor
         await verify_actor_active(actor.actor_id)
 
-        # Platform operators bypass workspace-level checks:
-        # platform_admin has full access (read + write)
-        # platform_viewer has read-only access
+        # Platform operators have no standing access to workspace content —
+        # only an active tenant-admin-issued support access grant allows it.
+        # platform_admin: full access (read + write) while a grant is active.
+        # platform_viewer: read-only, and only while a grant is active.
         if actor.actor_role in PLATFORM_OPERATOR_ROLES:
+            from app.services.support_access.service import has_active_grant
+
+            if not has_active_grant(db, tenant_id=None, workspace_id=workspace_id):
+                raise InsufficientPermissionsError(
+                    "This workspace requires an active support access grant from the "
+                    "tenant admin. Ask them to grant temporary support access, or check "
+                    "your active grants in the admin console."
+                )
             if actor.actor_role == "platform_admin":
                 return actor  # full access
             # platform_viewer: read-only

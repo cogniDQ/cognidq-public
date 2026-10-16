@@ -27,6 +27,8 @@ import {
   FileSearch,
   Server,
   Activity,
+  Sparkles,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -84,6 +86,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
       { id: 'tenant-members',     label: 'Tenant Members',       path: '/hub/t/:tenant_id/members',     icon: Users,           requiredPlatformRole: ['tenant_admin', 'platform_admin'] },
       { id: 'tenant-assignments', label: 'Workspace Assignments', path: '/hub/t/:tenant_id/assignments', icon: Key,             requiredPlatformRole: ['tenant_admin', 'platform_admin'] },
       { id: 'tenant-connections', label: 'Connections',           path: '/hub/t/:tenant_id/connections', icon: Database,        requiredPlatformRole: ['tenant_admin', 'platform_admin'] },
+      { id: 'tenant-support-access', label: 'Support Access',     path: '/hub/t/:tenant_id/support-access', icon: ShieldCheck,   requiredPlatformRole: ['tenant_admin', 'platform_admin'] },
     ],
   },
 
@@ -94,6 +97,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
     order: 2,
     visibility: 'workspace',
     items: [
+      { id: 'getting-started',   label: 'Getting Started',   path: '/onboarding',                                          icon: Sparkles },
       { id: 'overview',          label: 'Overview',          path: '/hub/t/:tenant_id/ws/:workspace_id/overview',          icon: LayoutDashboard },
       // Glossary is a tenant-scoped resource surfaced in workspace context.
       // Connections live under Tenant Administration (managed by tenant_admin only).
