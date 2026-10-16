@@ -149,7 +149,7 @@ def main() -> int:
         print("\nSeeding demo source tables (schema `demo`) …")
         _create_demo_tables(cur)
         conn.commit()
-        print("  ✓  demo.customers / demo.orders / demo.products")
+        print("  ✓  demo.customers / demo.orders / demo.products / demo.payments")
 
     except Exception as exc:
         conn.rollback()
@@ -204,7 +204,7 @@ def main() -> int:
 def _create_demo_tables(cur) -> None:
     """(Re)create the `demo` schema tables the demo flow runs against."""
     cur.execute("CREATE SCHEMA IF NOT EXISTS demo")
-    cur.execute("DROP TABLE IF EXISTS demo.customers, demo.orders, demo.products")
+    cur.execute("DROP TABLE IF EXISTS demo.customers, demo.orders, demo.products, demo.payments")
 
     cur.execute("""
         CREATE TABLE demo.customers (
@@ -267,6 +267,29 @@ def _create_demo_tables(cur) -> None:
         ('p-0003', 'Gadget Pro',  0.00, 'Gadgets', TRUE),
         ('p-0004', 'Gizmo Mini', 14.75, 'Gadgets', FALSE),
         ('p-0005', NULL,          4.20, 'Misc',    TRUE)
+    """)
+
+    cur.execute("""
+        CREATE TABLE demo.payments (
+            id              TEXT,
+            order_id        TEXT,
+            transaction_id  TEXT,
+            amount          NUMERIC(10,2),
+            currency        TEXT,
+            payment_method  TEXT,
+            paid_at         TIMESTAMPTZ
+        )
+    """)
+    cur.execute("""
+        INSERT INTO demo.payments VALUES
+        ('pay-0001', 'o-0001', 'txn-aa001',  19.99, 'USD', 'card',      '2025-09-02 09:15:00+00'),
+        ('pay-0002', 'o-0002', 'txn-aa002',  45.00, 'USD', 'card',      '2025-09-04 15:00:00+00'),
+        ('pay-0003', 'o-0003', 'txn-aa003',   0.00, 'USD', NULL,        '2025-09-06 10:05:00+00'),
+        ('pay-0004', 'o-0004', 'txn-aa004',  -3.50, 'USD', 'refund',    '2025-09-08 11:35:00+00'),
+        ('pay-0005', 'o-0005', 'txn-aa005', 120.00, 'US',  'card',      '2025-09-11 13:05:00+00'),
+        ('pay-0006', 'o-0006', 'txn-aa006',  75.25, 'USD', NULL,        '2025-09-13 15:50:00+00'),
+        ('pay-0007', 'o-0007', 'txn-aa006',  32.10, 'EUR', 'paypal',    '2025-09-19 09:35:00+00'),
+        ('pay-0008', 'o-0008', 'txn-aa008',  58.60, 'USD', 'bank_wire', '2025-09-22 16:25:00+00')
     """)
 
 

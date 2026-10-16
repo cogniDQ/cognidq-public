@@ -141,6 +141,7 @@ class GeneralDQSeeder:
             ("ds_customers", "customers", "table", "public", "Customer master table"),
             ("ds_orders", "orders", "table", "public", "Transactional orders table"),
             ("ds_products", "products", "table", "public", "Product catalog table"),
+            ("ds_payments", "payments", "table", "public", "Payment transactions table"),
         ]
         ids: list[UUID] = []
         for key, name, dtype, schema, desc in specs:
@@ -213,6 +214,16 @@ class GeneralDQSeeder:
             ("category", "varchar", True, ["Tools", "Apparel", "Home"]),
             ("active", "boolean", False, ["true", "false"]),
         ],
+        # payments
+        [
+            ("id", "uuid", False, ["pay1a4-001", "pay1a4-002"]),
+            ("order_id", "uuid", False, ["o1a4-001", "o1a4-002"]),
+            ("transaction_id", "varchar", False, ["txn-aa001", "txn-aa002", "txn-aa006"]),
+            ("amount", "numeric", False, ["19.99", "45.00", "-3.50"]),
+            ("currency", "varchar", False, ["USD", "EUR", "US"]),
+            ("payment_method", "varchar", True, ["card", "paypal", "bank_wire", ""]),
+            ("paid_at", "timestamp", False, ["2025-01-01 09:15:00", "2024-09-30 15:00:00"]),
+        ],
     ]
 
     def _seed_dataset_fields(self, dataset_ids: list[UUID], now: datetime) -> None:
@@ -255,7 +266,7 @@ class GeneralDQSeeder:
         dataset_ids: list[UUID],
         now: datetime,
     ) -> list[UUID]:
-        customers_id, orders_id, products_id = dataset_ids
+        customers_id, orders_id, products_id, payments_id = dataset_ids
         specs = [
             {
                 "key": "rule_email_not_null",
@@ -306,6 +317,56 @@ class GeneralDQSeeder:
                 "target_columns": ["price"],
                 "dataset_id": products_id,
                 "desc": "Product price must be greater than zero.",
+            },
+            {
+                "key": "rule_customer_country_valid",
+                "name": "customers.country_code — Accepted Values",
+                "category": "validity",
+                "rule_type": "accepted_values_check",
+                "target_table": "customers",
+                "target_columns": ["country_code"],
+                "dataset_id": customers_id,
+                "desc": "Country code must be a recognized ISO value.",
+            },
+            {
+                "key": "rule_customer_email_unique",
+                "name": "customers.email — Unique",
+                "category": "uniqueness",
+                "rule_type": "duplicate_check",
+                "target_table": "customers",
+                "target_columns": ["id"],
+                "dataset_id": customers_id,
+                "desc": "Customer id must not appear more than once.",
+            },
+            {
+                "key": "rule_payment_amount_positive",
+                "name": "payments.amount — Positive",
+                "category": "validity",
+                "rule_type": "range_check",
+                "target_table": "payments",
+                "target_columns": ["amount"],
+                "dataset_id": payments_id,
+                "desc": "Every payment must have a positive amount.",
+            },
+            {
+                "key": "rule_payment_method_not_null",
+                "name": "payments.payment_method — Not Null",
+                "category": "completeness",
+                "rule_type": "null_check",
+                "target_table": "payments",
+                "target_columns": ["payment_method"],
+                "dataset_id": payments_id,
+                "desc": "Payment method must not be null.",
+            },
+            {
+                "key": "rule_payment_txn_unique",
+                "name": "payments.transaction_id — Unique",
+                "category": "uniqueness",
+                "rule_type": "duplicate_check",
+                "target_table": "payments",
+                "target_columns": ["transaction_id"],
+                "dataset_id": payments_id,
+                "desc": "Transaction id must not appear more than once.",
             },
         ]
         ids: list[UUID] = []
@@ -440,13 +501,18 @@ class GeneralDQSeeder:
         dataset_ids: list[UUID],
         now: datetime,
     ) -> None:
-        customers_id, orders_id, products_id = dataset_ids
+        customers_id, orders_id, products_id, payments_id = dataset_ids
         (
             rule_email_null,
             rule_email_fmt,
             rule_order_amount,
             rule_order_status,
             rule_product_price,
+            rule_customer_country,
+            rule_customer_email_unique,
+            rule_payment_amount,
+            rule_payment_method,
+            rule_payment_txn_unique,
         ) = rule_ids
 
         # issue_type: threshold_breach | execution_error
@@ -572,6 +638,66 @@ class GeneralDQSeeder:
                 890,
                 15000,
                 0.941,
+            ),
+            (
+                "issue_11",
+                "Invalid country codes on customer records",
+                "threshold_breach",
+                "minor",
+                "open",
+                rule_customer_country,
+                customers_id,
+                19,
+                15000,
+                0.9987,
+            ),
+            (
+                "issue_12",
+                "Duplicate customer ids detected",
+                "threshold_breach",
+                "critical",
+                "open",
+                rule_customer_email_unique,
+                customers_id,
+                2,
+                15000,
+                0.99987,
+            ),
+            (
+                "issue_13",
+                "Negative payment amounts recorded",
+                "threshold_breach",
+                "major",
+                "open",
+                rule_payment_amount,
+                payments_id,
+                6,
+                18400,
+                0.9997,
+            ),
+            (
+                "issue_14",
+                "Payments missing a payment method",
+                "threshold_breach",
+                "minor",
+                "in_progress",
+                rule_payment_method,
+                payments_id,
+                310,
+                18400,
+                0.983,
+            ),
+            (
+                "issue_15",
+                "Duplicate transaction ids in payments",
+                "threshold_breach",
+                "critical",
+                "open",
+                rule_payment_txn_unique,
+                payments_id,
+                4,
+                18400,
+                0.99978,
             ),
         ]
 
@@ -761,6 +887,41 @@ class GeneralDQSeeder:
                 "sandbox",
                 "An isolated, time-limited platform workspace provisioned for prospect evaluation.",
                 "Platform Entity",
+            ),
+            (
+                "gls_customer",
+                "Customer",
+                "customers.id",
+                "A person or account that has placed at least one order in the shop.",
+                "Business Entity",
+            ),
+            (
+                "gls_order",
+                "Order",
+                "orders.id",
+                "A single purchase transaction placed by a customer.",
+                "Business Entity",
+            ),
+            (
+                "gls_active_product",
+                "Active",
+                "products.active",
+                "Whether a product is currently available for sale.",
+                "Business Entity",
+            ),
+            (
+                "gls_payment",
+                "Payment",
+                "payments.id",
+                "A single settlement transaction against an order's total amount.",
+                "Business Entity",
+            ),
+            (
+                "gls_order_status",
+                "Order Status",
+                "orders.status",
+                "The current fulfillment state of an order (e.g. paid, pending, shipped, refunded).",
+                "Business Entity",
             ),
         ]
 
