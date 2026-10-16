@@ -114,11 +114,16 @@ and `seed-data/`.
 | Role | Email | Password |
 |---|---|---|
 | Platform admin | `admin@example.com` | `change-me-strong-password` |
-| Data steward | `steward@example.com` | `change-me-strong-password` |
+| Tenant admin | `qa.tenantadmin@rbac-qa.test` | `change-me-strong-password` |
+| Data steward | `qa.datasteward@rbac-qa.test` | `change-me-strong-password` |
 
-> Use **admin** to manage tenants, connections, and workspaces; use
-> **steward** to see the product the way a scoped workspace user does.
-> Create more users/roles from the admin UI when you need them.
+> Use **tenant admin** to manage the Demo Workspace's connections and
+> members (and to grant the platform admin a temporary support access
+> grant, since it has no standing access on its own); use **data
+> steward** to see the product the way a scoped workspace user does.
+> The full set of per-role accounts is in
+> [TEST_CREDENTIALS.md](../TEST_CREDENTIALS.md). Create more users/roles
+> from the admin UI when you need them.
 
 > **Demo passwords are intentionally identical and weak.** They exist
 > only to make the demo painless. **Never** use them outside your local

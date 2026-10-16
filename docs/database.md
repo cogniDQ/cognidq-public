@@ -88,12 +88,13 @@ docker compose exec backend python scripts/seed_demo_data.py
 
 What it creates:
 
-- **Tenant:** *Acme Corp* (slug `acme`).
-- **Workspace:** *Demo Workspace* inside *Acme Corp*.
-- **Users:** `admin@example.com`, `tenant.admin@example.com`,
-  `ws.admin@example.com`, `engineer@example.com`,
-  `steward@example.com`, `analyst@example.com`,
-  `viewer@example.com` — all with password
+- **Tenant:** *RBAC QA* (slug `rbac-qa`).
+- **Workspace:** *Demo Workspace* (the renamed RBAC QA Workspace) inside
+  *RBAC QA* — the only workspace a fresh install seeds.
+- **Users:** `admin@example.com` (global platform admin) plus the eight
+  per-role RBAC QA accounts (`qa.tenantadmin@rbac-qa.test`,
+  `qa.datasteward@rbac-qa.test`, etc. — full list in
+  [TEST_CREDENTIALS.md](../TEST_CREDENTIALS.md)), all with password
   `change-me-strong-password`.
 - **Datasets:** `customers`, `orders`, `payments`, `products`
   (registered against the CSV files in `examples/datasets/`).

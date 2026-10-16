@@ -19,7 +19,7 @@ Prerequisite: the local stack is running and seeded — see
 
 Open <http://localhost:5173> and sign in as **data steward**:
 
-- email: `steward@example.com`
+- email: `qa.datasteward@rbac-qa.test`
 - password: `change-me-strong-password`
 
 The data steward role is the right level of access for authoring rules

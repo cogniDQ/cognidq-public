@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Seed demo data for a fresh CogniDQ installation.
+"""Seed demo content into the Demo Workspace for a fresh CogniDQ installation.
 
-Creates ONE demo tenant and ONE demo workspace with two logins
-(admin@example.com / steward@example.com), plus ready-to-explore demo
-content: a live connection, datasets, glossary terms, DQ rules, a flow,
-and one REAL flow execution. Fully idempotent — safe to re-run.
+The Demo Workspace itself (and the RBAC QA tenant/users it lives under)
+is created by migration `052_seed_rbac_qa_users.sql` + `0005_consolidate_
+demo_into_rbac_qa.py` — this script only adds ready-to-explore demo
+content on top of it: a live connection, datasets, glossary terms, DQ
+rules, a flow, and one REAL flow execution. Fully idempotent — safe to
+re-run.
 
 Usage (inside the backend container):
 
@@ -40,18 +42,10 @@ from app.core.config import settings  # noqa: E402
 # Platform bootstrap admin — same UUID hard-coded in 004_default_org_domain_team.sql
 BOOTSTRAP_ADMIN_UUID = UUID("63cae557-c3bc-4442-8592-58205e772aa6")
 
-DEMO_TENANT_UUID = UUID("10000000-1000-4000-8000-000000000001")
-DEMO_WORKSPACE_UUID = UUID("20000000-2000-4000-8000-000000000002")
-
-DEMO_STEWARD_UUID = UUID("20000002-2000-4000-8000-000000000002")
-
-# Legacy demo users removed from the default seed — deleted on re-run so
-# existing installs converge on the simplified two-login demo.
-LEGACY_DEMO_USER_UUIDS = (
-    UUID("10000001-1000-4000-8000-000000000001"),  # tenant.admin@example.com
-    UUID("20000001-2000-4000-8000-000000000001"),  # ws.admin@example.com
-    UUID("20000003-2000-4000-8000-000000000003"),  # viewer@example.com
-)
+# The Demo Workspace is the RBAC QA tenant/workspace, renamed by migration
+# 0005_consolidate_into_rbac_qa — seeded by 052_seed_rbac_qa_users.sql.
+DEMO_TENANT_UUID = UUID("33333333-3333-4333-8333-333333333333")
+DEMO_WORKSPACE_UUID = UUID("44444444-4444-4444-8444-444444444444")
 
 DEMO_PASSWORD = "change-me-strong-password"
 
@@ -66,116 +60,6 @@ def _hash_password(password: str) -> str:
     sha = hashlib.sha256(password.encode("utf-8")).hexdigest()
     salt = bcrypt.gensalt(rounds=12)
     return bcrypt.hashpw(sha.encode("utf-8"), salt).decode("utf-8")
-
-
-def _upsert_user(
-    cur,
-    *,
-    user_id: UUID,
-    email: str,
-    full_name: str,
-    platform_role: str | None,
-    tenant_id: UUID | None,
-) -> str:
-    """Insert user if not present; update role/status if already exists."""
-    pw_hash = _hash_password(DEMO_PASSWORD)
-    cur.execute(
-        """
-        INSERT INTO users (
-            id, email, password_hash, full_name,
-            platform_role, tenant_id,
-            status, email_verified,
-            created_at, updated_at
-        )
-        VALUES (
-            %s, %s, %s, %s,
-            %s, %s,
-            'ACTIVE', TRUE,
-            NOW(), NOW()
-        )
-        ON CONFLICT (id) DO UPDATE
-            SET password_hash  = EXCLUDED.password_hash,
-                full_name      = EXCLUDED.full_name,
-                platform_role  = EXCLUDED.platform_role,
-                status         = 'ACTIVE',
-                email_verified = TRUE,
-                updated_at     = NOW()
-        """,
-        (
-            str(user_id),
-            email.strip().lower(),
-            pw_hash,
-            full_name,
-            platform_role,
-            str(tenant_id) if tenant_id else None,
-        ),
-    )
-    return email
-
-
-def _upsert_tenant(cur) -> None:
-    cur.execute(
-        """
-        INSERT INTO control.tenants (
-            tenant_id, tenant_name, tenant_slug,
-            status, region, plan,
-            created_at, updated_at,
-            created_by, updated_by, version
-        )
-        VALUES (
-            %s, 'Demo Tenant', 'demo',
-            'active', 'eu-west', 'enterprise',
-            NOW(), NOW(),
-            %s, %s, 0
-        )
-        ON CONFLICT (tenant_id) DO NOTHING
-        """,
-        (str(DEMO_TENANT_UUID), str(BOOTSTRAP_ADMIN_UUID), str(BOOTSTRAP_ADMIN_UUID)),
-    )
-
-
-def _upsert_workspace(cur) -> None:
-    # workspace_name_lower is GENERATED ALWAYS AS STORED (migration 041) —
-    # must NOT be included in INSERT or UPDATE column lists.
-    cur.execute(
-        """
-        INSERT INTO control.workspaces (
-            workspace_id, tenant_id,
-            workspace_name, workspace_slug,
-            default_timezone, status,
-            created_at, updated_at,
-            created_by, updated_by, version
-        )
-        VALUES (
-            %s, %s,
-            'Demo Workspace', 'demo-workspace',
-            'UTC', 'active',
-            NOW(), NOW(),
-            %s, %s, 0
-        )
-        ON CONFLICT (workspace_id) DO NOTHING
-        """,
-        (
-            str(DEMO_WORKSPACE_UUID),
-            str(DEMO_TENANT_UUID),
-            str(BOOTSTRAP_ADMIN_UUID),
-            str(BOOTSTRAP_ADMIN_UUID),
-        ),
-    )
-
-
-def _upsert_workspace_role(cur, *, workspace_id: UUID, user_id: UUID, role_name: str) -> None:
-    cur.execute(
-        """
-        INSERT INTO control.workspace_role_assignments
-            (workspace_id, user_id, role_name, granted_by, granted_at)
-        VALUES (%s, %s, %s, %s, NOW())
-        ON CONFLICT (workspace_id, user_id) DO UPDATE
-            SET role_name  = EXCLUDED.role_name,
-                granted_at = NOW()
-        """,
-        (str(workspace_id), str(user_id), role_name, str(BOOTSTRAP_ADMIN_UUID)),
-    )
 
 
 def main() -> int:
@@ -244,45 +128,24 @@ def main() -> int:
         )
         print("  ✓  admin@example.com  (platform_admin)")
 
-        # ── 2. Demo tenant ────────────────────────────────────────────
-        print("\nSeeding demo tenant …")
-        _upsert_tenant(cur)
-        print("  ✓  Demo Tenant  (id=10000000-…)")
-
-        # ── 3. Demo workspace ─────────────────────────────────────────
-        print("\nSeeding demo workspace …")
-        _upsert_workspace(cur)
-        print("  ✓  Demo Workspace  (id=20000000-…)")
-
-        # ── 4. Workspace-scoped user ──────────────────────────────────
-        print("\nSeeding demo steward …")
-        _upsert_user(
-            cur,
-            user_id=DEMO_STEWARD_UUID,
-            email="steward@example.com",
-            full_name="Data Steward",
-            platform_role=None,
-            tenant_id=DEMO_TENANT_UUID,
-        )
-        _upsert_workspace_role(
-            cur,
-            workspace_id=DEMO_WORKSPACE_UUID,
-            user_id=DEMO_STEWARD_UUID,
-            role_name="data_steward",
-        )
-        print("  ✓  steward@example.com  (data_steward)")
-
-        # ── 5. Remove legacy demo users from older seeds ──────────────
+        # ── 2. Demo Workspace (RBAC QA tenant/workspace) ───────────────
+        # Created by migrations 052_seed_rbac_qa_users.sql +
+        # 0005_consolidate_into_rbac_qa — nothing to seed here, just
+        # confirm it exists before layering demo content on top.
         cur.execute(
-            "DELETE FROM users WHERE id = ANY(%s::uuid[])",
-            ([str(u) for u in LEGACY_DEMO_USER_UUIDS],),
+            "SELECT 1 FROM control.workspaces WHERE workspace_id = %s",
+            (str(DEMO_WORKSPACE_UUID),),
         )
-        if cur.rowcount:
-            print(f"  ✓  removed {cur.rowcount} legacy demo user(s)")
+        if cur.fetchone() is None:
+            raise RuntimeError(
+                "Demo Workspace not found — run `alembic upgrade head` first "
+                "(it is seeded by migrations 052 and 0005)."
+            )
+        print("\n  ✓  Demo Workspace  (id=44444444-…, data_steward: qa.datasteward@rbac-qa.test)")
 
         conn.commit()
 
-        # ── 6. Demo source tables (schema `demo`) ─────────────────────
+        # ── 3. Demo source tables (schema `demo`) ──────────────────────
         print("\nSeeding demo source tables (schema `demo`) …")
         _create_demo_tables(cur)
         conn.commit()
@@ -300,7 +163,7 @@ def main() -> int:
     cur.close()
     conn.close()
 
-    # ── 7. Demo content (datasets, rules, glossary, flow, real run) ────
+    # ── 4. Demo content (datasets, rules, glossary, flow, real run) ────
     print("\nSeeding demo content …")
     try:
         _seed_demo_content()
@@ -313,13 +176,17 @@ def main() -> int:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✓  Demo seed complete.  Open http://localhost:5173 and sign in:
 
-   Role                Email                  Password
-   ──────────────────  ─────────────────────  ──────────────────────────
-   Platform admin      admin@example.com      change-me-strong-password
-   Data steward        steward@example.com    change-me-strong-password
+   Role                Email                           Password
+   ──────────────────  ──────────────────────────────  ──────────────────────────
+   Platform admin      admin@example.com               change-me-strong-password
+   Tenant admin        qa.tenantadmin@rbac-qa.test      change-me-strong-password
+   Data steward        qa.datasteward@rbac-qa.test      change-me-strong-password
 
    The Demo Workspace comes pre-loaded with a live connection,
    datasets, glossary terms, DQ rules, a flow, and one real run.
+   (Note: the platform admin only sees it after a tenant admin grants
+   temporary support access — log in as the tenant admin or data
+   steward above to explore it directly.)
 
    ⚠  These passwords are for local demo use only.
       Never expose this stack to the internet without hardening.
@@ -417,7 +284,7 @@ def _seed_demo_content() -> None:
 
     db = SessionLocal()
     try:
-        # 7a. Template content: datasets, fields, rules, glossary, issues …
+        # 4a. Template content: datasets, fields, rules, glossary, issues …
         GeneralDQSeeder(db).seed(DEMO_TENANT_UUID, DEMO_WORKSPACE_UUID)
         db.commit()
         print("  ✓  datasets, rules, glossary, issues (template: general_dq)")
@@ -425,7 +292,7 @@ def _seed_demo_content() -> None:
         ds_id = _demo_uid("demo_data_source")
         flow_id = _demo_uid("flow_nightly_dq")
 
-        # 7b. Point the template datasets at the real `demo` schema tables.
+        # 4b. Point the template datasets at the real `demo` schema tables.
         db.execute(
             text(
                 "UPDATE control.datasets SET schema_name = 'demo' "
@@ -434,7 +301,7 @@ def _seed_demo_content() -> None:
             {"wid": str(DEMO_WORKSPACE_UUID)},
         )
 
-        # 7c. Give the demo connection real credentials (the app's own DB) so
+        # 4c. Give the demo connection real credentials (the app's own DB) so
         #     flow executions can actually connect.
         parsed = urlparse(settings.DATABASE_URL)
         creds = {
@@ -470,7 +337,7 @@ def _seed_demo_content() -> None:
             {"cid": str(cred_id), "dsid": str(ds_id)},
         )
 
-        # 7d. Make the connection visible on the workspace connections list.
+        # 4d. Make the connection visible on the workspace connections list.
         db.execute(
             text("""
                 INSERT INTO control.workspace_connection_assignments
@@ -485,7 +352,7 @@ def _seed_demo_content() -> None:
             },
         )
 
-        # 7e. Replace the template's placeholder flow definition with an
+        # 4e. Replace the template's placeholder flow definition with an
         #     executable source → checks graph (same shape the UI builder saves).
         flow_def = {
             "nodes": [
@@ -533,7 +400,7 @@ def _seed_demo_content() -> None:
         db.commit()
         print("  ✓  live connection + executable flow (Nightly DQ Sweep)")
 
-        # 7f. One REAL flow execution so reports/results show genuine data.
+        # 4f. One REAL flow execution so reports/results show genuine data.
         already_ran = db.execute(
             text(
                 "SELECT 1 FROM public.flow_executions "

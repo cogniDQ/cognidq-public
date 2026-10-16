@@ -132,6 +132,9 @@ def upsert_tenant_and_workspace(cur) -> None:
         """,
         (RBAC_QA_TENANT_ID, GRANTED_BY_USER_ID, GRANTED_BY_USER_ID),
     )
+    # Named "Demo Workspace" — this is also the one workspace seeded with
+    # pre-loaded demo content by scripts/seed_demo_data.py. See migration
+    # 0005_consolidate_into_rbac_qa.py.
     cur.execute(
         """
         INSERT INTO control.workspaces (
@@ -139,11 +142,13 @@ def upsert_tenant_and_workspace(cur) -> None:
             workspace_slug, default_timezone, status,
             created_at, updated_at, created_by, updated_by, version
         ) VALUES (
-            %s, %s, 'RBAC QA Workspace',
-            'rbac-qa-workspace', 'UTC', 'active',
+            %s, %s, 'Demo Workspace',
+            'demo-workspace', 'UTC', 'active',
             NOW(), NOW(), %s, %s, 0
         )
-        ON CONFLICT (workspace_id) DO NOTHING
+        ON CONFLICT (workspace_id) DO UPDATE
+           SET workspace_name = 'Demo Workspace',
+               workspace_slug = 'demo-workspace'
         """,
         (
             RBAC_QA_WORKSPACE_ID,

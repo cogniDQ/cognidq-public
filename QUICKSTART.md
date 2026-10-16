@@ -40,11 +40,15 @@ Open **http://localhost:5173** and sign in:
 | Email | Password | Role |
 |---|---|---|
 | `admin@example.com` | `change-me-strong-password` | Platform admin |
-| `steward@example.com` | `change-me-strong-password` | Data steward (workspace) |
+| `qa.tenantadmin@rbac-qa.test` | `change-me-strong-password` | Tenant admin |
+| `qa.datasteward@rbac-qa.test` | `change-me-strong-password` | Data steward (workspace) |
 
 The Demo Workspace comes pre-loaded with a live connection, datasets,
 glossary terms, DQ rules, a flow, open issues, and one real flow run —
-so every page has something to explore.
+so every page has something to explore. Sign in as the tenant admin or
+data steward above to see it; the platform admin needs a tenant-admin
+support access grant first. The full set of per-role test accounts is
+in [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md).
 
 ## Useful URLs
 
