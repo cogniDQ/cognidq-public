@@ -2,6 +2,9 @@
 Application configuration
 """
 
+import os
+import tempfile
+
 from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
@@ -72,7 +75,7 @@ class Settings(BaseSettings):
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
 
     # File Upload
-    UPLOAD_DIR: str = "/tmp/dq_uploads"
+    UPLOAD_DIR: str = os.path.join(tempfile.gettempdir(), "dq_uploads")
     MAX_UPLOAD_SIZE_MB: int = 100
 
     # MinIO Storage
@@ -168,6 +171,10 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        # pydantic-settings v2 defaults to extra="forbid", which crashes the
+        # app when .env contains any variable not declared above (e.g. the
+        # compose-only MINIO_ROOT_* / GF_* keys shipped in .env.example).
+        extra = "ignore"
 
 
 # Create settings instance

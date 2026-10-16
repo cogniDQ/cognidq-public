@@ -215,7 +215,6 @@ function CheckConfigPanelInner({ node, onConfigChange, onClose, onSave, allNodes
                 fields={fields}
                 config={config}
                 onChange={updateField}
-                onConfigChange={updateField}
                 errors={errors}
                 availableColumns={availableColumns}
               />

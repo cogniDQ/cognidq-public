@@ -13,7 +13,7 @@ def slugify(name: str) -> str:
     slug = name.lower().strip()
     slug = re.sub(r"[^\w\s-]", "", slug)
     slug = re.sub(r"[\s_-]+", "-", slug)
-    slug = re.sub(r"^-+|-+$", "", slug)
+    slug = slug.strip("-")
     return slug
 
 

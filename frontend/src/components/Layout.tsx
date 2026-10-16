@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Code2, Github, User, LogOut, Settings, ChevronDown, Image } from 'lucide-react'
+import { Code2, Github, User, LogOut, Settings, ChevronDown } from 'lucide-react'
 import { Toaster } from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import RoleBadge from './RoleBadge'
@@ -86,18 +86,6 @@ export default function Layout({ children }: LayoutProps) {
               )}
 
               <Link
-                to="/marketing"
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ml-2 ${
-                  location.pathname.startsWith('/marketing')
-                    ? 'bg-brand-soft text-brand font-medium'
-                    : 'text-content-muted hover:text-content hover:bg-surface-overlay'
-                }`}
-              >
-                <Image className="w-4 h-4" />
-                <span className="hidden sm:inline">Marketing Kit</span>
-              </Link>
-
-              <Link
                 to="/request-demo"
                 className="ml-2 inline-flex items-center px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-semibold transition-colors shadow-lg shadow-brand/30"
               >
@@ -142,7 +130,13 @@ export default function Layout({ children }: LayoutProps) {
                   {/* Dropdown Menu */}
                   {showUserMenu && (
                     <>
-                      <div className="fixed inset-0 z-10" onClick={() => setShowUserMenu(false)}></div>
+                      <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowUserMenu(false)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Escape') setShowUserMenu(false);
+                        }}
+                      ></div>
                       <div className="absolute right-0 mt-2 w-56 glass rounded-lg shadow-xl border border-edge z-20">
                         <div className="px-4 py-3 border-b border-edge">
                           <p className="text-sm font-medium text-content">{user.full_name || 'User'}</p>

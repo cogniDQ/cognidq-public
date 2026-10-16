@@ -242,6 +242,13 @@ export default function FlowsList() {
               key={flow.id} 
               className="glass p-5 rounded-lg hover:border-primary-500/50 transition-all group cursor-pointer"
               onClick={() => handleEdit(flow.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  handleEdit(flow.id)
+                }
+              }}
+              tabIndex={0}
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-3">
@@ -299,7 +306,11 @@ export default function FlowsList() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-2 pt-3 border-t border-dark-700" onClick={(e) => e.stopPropagation()}>
+              <div
+                className="flex items-center space-x-2 pt-3 border-t border-dark-700"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+              >
                 <button
                   onClick={() => handleExecute(flow)}
                   disabled={executing === flow.id || flow.status !== FlowStatus.ACTIVE}
@@ -352,11 +363,16 @@ export default function FlowsList() {
 
       {/* Delete Confirmation Modal */}
       {flowToDelete && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50" onClick={cancelDelete}>
-          <div 
-            className="bg-dark-900 rounded-lg max-w-lg w-full mx-4 border border-dark-700 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div
+          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) cancelDelete()
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') cancelDelete()
+          }}
+        >
+          <div className="bg-dark-900 rounded-lg max-w-lg w-full mx-4 border border-dark-700 shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-dark-700">
               <h3 className="text-lg font-semibold text-white">Delete flow</h3>

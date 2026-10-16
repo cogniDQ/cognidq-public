@@ -14,3 +14,8 @@
 # Suppressions for legacy doc references (security audit report + history cleanup guide)
 # These files exist solely to document what was found and remediated.
 # Format: <fingerprint>
+
+# backend/tests/unit/services/f056/test_p03_api.py: mock token literal "dqai_secret123"
+# used as a fake AccessTokenService return value; trips generic-api-key on entropy.
+98935720a89c838634255c959e0012e409c7c79c:backend/tests/unit/services/f056/test_p03_api.py:generic-api-key:57
+98935720a89c838634255c959e0012e409c7c79c:backend/tests/unit/services/f056/test_p03_api.py:generic-api-key:61

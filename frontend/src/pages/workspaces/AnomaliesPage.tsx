@@ -238,7 +238,13 @@ export default function AnomaliesPage() {
       {/* Detail drawer */}
       {selected && (
         <div className="fixed inset-0 z-50 flex" data-testid="anomaly-detail-overlay">
-          <div className="flex-1 bg-black/50" onClick={() => setSelected(null)} />
+          <div
+            className="flex-1 bg-black/50"
+            onClick={() => setSelected(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setSelected(null)
+            }}
+          />
           <div
             className="w-full max-w-xl bg-slate-900 border-l border-slate-700 overflow-y-auto"
             data-testid="anomaly-detail-drawer"

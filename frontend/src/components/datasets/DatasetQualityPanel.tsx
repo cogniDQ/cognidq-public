@@ -252,7 +252,7 @@ export default function DatasetQualityPanel({ workspaceId, dataset }: Props) {
     const lastRunAt = allLatest
       .map((e) => e.completed_at ?? e.started_at ?? e.created_at)
       .filter((v): v is string => !!v)
-      .sort()
+      .sort((a, b) => a.localeCompare(b))
       .pop();
     const totalFailedRows = allLatest.reduce(
       (acc, e) => acc + (e.rows_failed ?? 0),

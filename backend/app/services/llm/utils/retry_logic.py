@@ -4,6 +4,7 @@ Retry logic with exponential backoff for LLM calls
 
 import asyncio
 import logging
+import random
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
@@ -32,13 +33,11 @@ class RetryConfig:
 
     def get_delay(self, attempt: int) -> float:
         """Calculate delay for given attempt"""
-        import random
-
         delay = min(self.initial_delay * (self.exponential_base**attempt), self.max_delay)
 
         if self.jitter:
-            # Add random jitter ±25%
-            delay = delay * (0.75 + random.random() * 0.5)
+            # Add random jitter ±25% (timing only, not security-sensitive)
+            delay = delay * (0.75 + random.SystemRandom().random() * 0.5)
 
         return delay
 

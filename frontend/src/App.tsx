@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminGuard from './components/admin/AdminGuard'
 import AdminLayout from './components/admin/AdminLayout'
 import TenantListPage from './pages/admin/tenants/TenantListPage'
+import PlatformWelcome from './pages/admin/PlatformWelcome'
 import CreateTenantPage from './pages/admin/tenants/CreateTenantPage'
 import TenantDetailPage from './pages/admin/tenants/TenantDetailPage'
 import EditTenantPage from './pages/admin/tenants/EditTenantPage'
@@ -69,10 +70,9 @@ import PrivacyPage from './pages/public/PrivacyPage'
 import StatusPage from './pages/public/StatusPage'
 import ContactPage from './pages/public/ContactPage'
 import OnboardingWizardPage from './pages/OnboardingWizardPage'
-import MarketingKit from './pages/marketing/MarketingKit'
-import MarketingAssetPage from './pages/marketing/MarketingAssetPage'
 import AdminDemoRequestsPage from './pages/admin/sandbox/AdminDemoRequestsPage'
 import AdminSandboxesPage from './pages/admin/sandbox/AdminSandboxesPage'
+import AdminSupportAccessPage from './pages/admin/AdminSupportAccessPage'
 import TrialExpiredPage from './pages/sandbox/TrialExpiredPage'
 import TenantAdminGuard from './components/tenant/TenantAdminGuard'
 import TenantAdminRedirect from './components/tenant/TenantAdminRedirect'
@@ -80,6 +80,7 @@ import TenantConnectionsRedirect from './components/TenantConnectionsRedirect'
 import TenantAdminDashboard from './pages/tenant/TenantAdminDashboard'
 import TenantMembersPage from './pages/tenant/TenantMembersPage'
 import TenantAssignmentsPage from './pages/tenant/TenantAssignmentsPage'
+import TenantSupportAccessPage from './pages/tenant/TenantSupportAccessPage'
 import AcceptInvitationPage from './pages/auth/AcceptInvitationPage'
 import SetPasswordPage from './pages/auth/SetPasswordPage'
 
@@ -103,33 +104,20 @@ function App() {
             <Route path="/status" element={<Layout><StatusPage /></Layout>} />
             <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
 
-            <Route path="/onboarding" element={
-              <ProtectedRoute>
-                <Layout>
-                  <OnboardingWizardPage />
-                </Layout>
-              </ProtectedRoute>
-            } />
-
             <Route path="/" element={
               <Layout>
                 <Home />
               </Layout>
             } />
 
-            {/* Marketing graphics kit (public) */}
-            <Route path="/marketing" element={
-              <Layout>
-                <MarketingKit />
-              </Layout>
-            } />
-            <Route path="/marketing/:slug" element={
-              <Layout>
-                <MarketingAssetPage />
-              </Layout>
-            } />
-
             {/* Section 2: Platform Admin */}
+            <Route path="/admin" element={
+              <AdminGuard>
+                <AdminLayout>
+                  <PlatformWelcome />
+                </AdminLayout>
+              </AdminGuard>
+            } />
             <Route path="/admin/tenants" element={
               <AdminGuard>
                 <AdminLayout>
@@ -193,6 +181,13 @@ function App() {
                 </AdminLayout>
               </AdminGuard>
             } />
+            <Route path="/admin/support-access" element={
+              <AdminGuard>
+                <AdminLayout>
+                  <AdminSupportAccessPage />
+                </AdminLayout>
+              </AdminGuard>
+            } />
 
             {/* Section 2b: Tenant Admin — legacy redirects to unified /hub/t/:tenantId/* shell */}
             <Route path="/tenant-admin" element={<TenantAdminRedirect />} />
@@ -222,6 +217,7 @@ function App() {
               {/* Workspace-parameterized routes — guarded by WorkspaceAccessGuard (F131 P03) */}
               <Route path="ws/:workspace_id" element={<WorkspaceAccessGuard />}>
                 <Route path="overview" element={<WorkspaceOverview />} />
+                <Route path="onboarding" element={<OnboardingWizardPage />} />
                 <Route path="flows" element={<FlowsList />} />
                 <Route path="flow-builder" element={<RuleFlowBuilder />} />
                 <Route path="executions" element={<FlowExecutions />} />
@@ -278,6 +274,7 @@ function App() {
               <Route path="t/:tenant_id" element={<TenantAdminGuard><TenantAdminDashboard /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/members" element={<TenantAdminGuard><TenantMembersPage /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/assignments" element={<TenantAdminGuard><TenantAssignmentsPage /></TenantAdminGuard>} />
+              <Route path="t/:tenant_id/support-access" element={<TenantAdminGuard><TenantSupportAccessPage /></TenantAdminGuard>} />
               {/* Connections are tenant-scoped resources managed by tenant_admin */}
               <Route path="t/:tenant_id/connections" element={<TenantAdminGuard><ConnectionListPage /></TenantAdminGuard>} />
               <Route path="t/:tenant_id/connections/new" element={<TenantAdminGuard><CreateConnectionPage /></TenantAdminGuard>} />
@@ -287,6 +284,7 @@ function App() {
               {/* Tenant-scoped workspace routes — alias of /hub/ws/:workspace_id/* with tenant context in URL */}
               <Route path="t/:tenant_id/ws/:workspace_id" element={<WorkspaceAccessGuard />}>
                 <Route path="overview" element={<WorkspaceOverview />} />
+                <Route path="onboarding" element={<OnboardingWizardPage />} />
                 <Route path="flows" element={<FlowsList />} />
                 <Route path="flow-builder" element={<RuleFlowBuilder />} />
                 <Route path="executions" element={<FlowExecutions />} />
@@ -328,6 +326,9 @@ function App() {
             <Route path="/login" element={<Navigate to="/auth/login" replace />} />
             <Route path="/register" element={<Navigate to="/auth/register" replace />} />
             <Route path="/profile" element={<Navigate to="/hub/profile" replace />} />
+            {/* "Getting Started" now lives inside the workspace shell, not as a
+                standalone top-level page — redirect old bookmarks/links. */}
+            <Route path="/onboarding" element={<Navigate to="/hub" replace />} />
             <Route path="/settings" element={<Navigate to="/hub/settings" replace />} />
             {/* F132 P04: platform_admin no longer has Workspaces in nav (hidden by useNavigationMenu).
                 These legacy redirects remain for direct-link compatibility only. */}

@@ -155,7 +155,7 @@ in v0.2; treat as semi-stable.
 ```bash
 curl -X POST http://localhost:8000/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"email":"steward@example.com","password":"change-me-strong-password"}'
+  -d '{"email":"qa.datasteward@rbac-qa.test","password":"change-me-strong-password"}'
 ```
 
 ```jsonc

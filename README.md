@@ -88,8 +88,15 @@ Open <http://localhost:5173> and sign in:
 | Email | Password | Role |
 |---|---|---|
 | `admin@example.com` | `change-me-strong-password` | platform admin |
-| `steward@example.com` | `change-me-strong-password` | data steward |
-| `viewer@example.com` | `change-me-strong-password` | governance viewer |
+| `qa.tenantadmin@rbac-qa.test` | `change-me-strong-password` | tenant admin |
+| `qa.datasteward@rbac-qa.test` | `change-me-strong-password` | data steward |
+
+The Demo Workspace comes pre-loaded with a live connection, datasets,
+glossary terms, DQ rules, a flow, and one real run — log in as the
+tenant admin or data steward above to see it right away. (The platform
+admin needs a tenant-admin-issued support access grant first — it has no
+standing access to tenant/workspace content.) Full account list,
+including the other RBAC role fixtures: [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md).
 
 > **Demo passwords are weak by design.** They exist to make the demo
 > painless. Never use them outside your local laptop. See

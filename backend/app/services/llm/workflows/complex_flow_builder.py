@@ -1015,7 +1015,6 @@ Rules:
         if state.get("errors"):
             return "errors"
         return "success"
-        return "success"
 
 
 # Singleton instance

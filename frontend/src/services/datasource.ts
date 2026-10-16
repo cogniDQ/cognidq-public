@@ -12,6 +12,7 @@ import type {
   DataSourceDetailResponse,
   ConnectionTestResult,
   AuditLogResponse,
+  DataSource,
 } from '../types/dataSource';
 
 const base = (workspaceId: string) =>

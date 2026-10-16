@@ -137,13 +137,15 @@ export default function ParseResultModal({
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-        onClick={onClose}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose()
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onClose()
+        }}
       >
         {/* Dialog */}
-        <div
-          className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
-          onClick={e => e.stopPropagation()}
-        >
+        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
           {/* ── Header ── */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
             <div className="flex items-center gap-3">
@@ -665,12 +667,14 @@ function DatasetPickerModal({
   return (
     <div
       className="fixed inset-0 z-[60] bg-black/60 flex items-center justify-center p-4"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose()
+      }}
     >
-      <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden max-h-[70vh]"
-        onClick={e => e.stopPropagation()}
-      >
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden max-h-[70vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h3 className="font-semibold text-gray-800">Choose Dataset</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -767,7 +771,6 @@ function RolePill({ role }: { role: string }) {
     role === 'subject'   ? 'bg-blue-100 text-blue-700' :
     role === 'object'    ? 'bg-green-100 text-green-700' :
     role === 'condition' ? 'bg-orange-100 text-orange-700' :
-    role === 'scope'     ? 'bg-gray-100 text-gray-600' :
                            'bg-gray-100 text-gray-600'
   return (
     <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${cls}`}>{role}</span>

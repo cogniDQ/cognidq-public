@@ -82,11 +82,16 @@ export const FlowScheduleModal: React.FC<FlowScheduleModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div
-        className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-lg mx-4"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
+    >
+      <div className="bg-gray-800 rounded-xl border border-gray-700 w-full max-w-lg mx-4">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <div className="flex items-center space-x-2">
@@ -106,6 +111,15 @@ export const FlowScheduleModal: React.FC<FlowScheduleModalProps> = ({
             <div
               className={`relative w-10 h-5 rounded-full transition-colors ${enabled ? 'bg-purple-500' : 'bg-gray-600'}`}
               onClick={() => setEnabled(!enabled)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setEnabled(!enabled);
+                }
+              }}
+              role="switch"
+              aria-checked={enabled}
+              tabIndex={0}
             >
               <div
                 className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${enabled ? 'translate-x-5' : 'translate-x-0.5'}`}

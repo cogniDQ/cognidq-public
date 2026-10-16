@@ -297,10 +297,9 @@ class CheckEffectivenessService:
 
             passes = [h["passed"] for h in history]
             pass_count = sum(passes)
-            pass_rate_overall = pass_count / total_runs
 
             # Check for always-passing (100% in 90 days, min runs)
-            if total_runs >= ALWAYS_PASSING_MIN_RUNS and pass_rate_overall == 1.0:
+            if total_runs >= ALWAYS_PASSING_MIN_RUNS and pass_count == total_runs:
                 classifications["always_pass"].append(meta)
                 continue
 

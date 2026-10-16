@@ -38,18 +38,6 @@ const mockGetActorRole = getActorRole as ReturnType<typeof vi.fn>
 const mockGetActorId = getActorId as ReturnType<typeof vi.fn>
 const mockUseWorkspacePermissions = useWorkspacePermissions as ReturnType<typeof vi.fn>
 
-function wrapper(path: string) {
-  return function Wrapper({ children }: { children: React.ReactNode }) {
-    return (
-      <MemoryRouter initialEntries={[path]}>
-        <Routes>
-          <Route path="*" element={children} />
-        </Routes>
-      </MemoryRouter>
-    )
-  }
-}
-
 function renderGate(
   permission: string,
   { path = '/hub/ws/ws1/permission-audit', fallback }: { path?: string; fallback?: React.ReactNode } = {},

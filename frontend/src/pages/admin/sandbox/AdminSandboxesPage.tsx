@@ -3,7 +3,7 @@
  *
  * Lists all sandbox environments with lifecycle actions and usage drill-in.
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Activity, Archive, Loader2, Pause, Trash2 } from 'lucide-react';
 import {
   archiveSandbox,

@@ -145,6 +145,39 @@ def _decode_token(token: str) -> dict:
     return payload
 
 
+def _require_support_grant_if_platform_admin(
+    actor: "DataSourceActorContext", request: Request
+) -> None:
+    """platform_admin has no standing access to data-source content — only
+    an active tenant-admin-issued support access grant allows it. No-op for
+    every other role.
+    """
+    if actor.actor_role != "platform_admin":
+        return
+
+    from app.models.database import get_db as _get_db
+    from app.services.support_access.service import has_active_grant
+
+    workspace_id = request.path_params.get("workspace_id")
+    db_gen = _get_db()
+    db = next(db_gen)
+    try:
+        if not has_active_grant(db, tenant_id=None, workspace_id=workspace_id):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=(
+                    "This requires an active support access grant from the tenant admin. "
+                    "Ask them to grant temporary support access, or check your active "
+                    "grants in the admin console."
+                ),
+            )
+    finally:
+        try:
+            next(db_gen, None)
+        except StopIteration:
+            pass
+
+
 def _build_actor_context(payload: dict) -> DataSourceActorContext:
     raw_actor_id: str | None = payload.get("actor_id")
     actor_role: str | None = payload.get("actor_role")
@@ -217,6 +250,7 @@ async def verify_data_source_write_actor(request: Request) -> DataSourceActorCon
                 f"Required: {sorted(DATA_SOURCE_WRITE_ROLES)}"
             ),
         )
+    _require_support_grant_if_platform_admin(actor, request)
     return actor
 
 
@@ -241,6 +275,7 @@ async def verify_data_source_read_actor(request: Request) -> DataSourceActorCont
                 f"Required: {sorted(DATA_SOURCE_READ_ROLES)}"
             ),
         )
+    _require_support_grant_if_platform_admin(actor, request)
     return actor
 
 

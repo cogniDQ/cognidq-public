@@ -191,6 +191,13 @@ function SourceNode({ node, isSelected, isDragged, onMouseDown, onClick, onStart
       style={{ left: node.x, top: node.y, zIndex: isDragged ? 1000 : 'auto' }}
       onMouseDown={(e) => onMouseDown(e, node)}
       onClick={() => onClick(node)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick(node)
+        }
+      }}
+      tabIndex={0}
     >
       <div className={`glass p-4 rounded-lg border-2 ${
         sourceData ? 'border-primary-500/50' : 'border-yellow-500/50'
@@ -265,6 +272,13 @@ function CheckNode({ node, check, connectedSource, isSelected, isDragged, onMous
       style={{ left: node.x, top: node.y, zIndex: isDragged ? 1000 : 'auto' }}
       onMouseDown={(e) => onMouseDown(e, node)}
       onClick={() => onClick(node)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick(node)
+        }
+      }}
+      tabIndex={0}
     >
       <div className={`glass p-4 rounded-lg border-2 ${connectedSource ? 'border-green-500/50' : 'border-dark-700'} w-48`}>
         <div className="flex items-start justify-between mb-3">

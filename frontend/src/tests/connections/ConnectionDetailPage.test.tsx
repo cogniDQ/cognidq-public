@@ -45,7 +45,7 @@ const mockGetActorRole = getActorRole as ReturnType<typeof vi.fn>
 const MOCK_CONNECTION = {
   connection_id: 'conn-1',
   tenant_id: 'tenant-123',
-  name: 'Prod DB',
+  source_name: 'Prod DB',
   source_type: 'postgresql',
   connection_mode: 'read_only',
   environment: 'production',

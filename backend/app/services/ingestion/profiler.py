@@ -257,7 +257,7 @@ class DataProfiler:
             checks.append("not_null_check")
 
         # Uniqueness checks
-        if profile.cardinality == 1.0:
+        if profile.unique_count == profile.total_count:
             checks.append("unique_check")
         elif profile.cardinality > 0.9:
             checks.append("high_cardinality")

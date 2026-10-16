@@ -14,6 +14,7 @@ import ContextHeader from '../components/ContextHeader';
 import RoleBadge from '../components/RoleBadge';
 import RoleStripe from '../components/RoleStripe';
 import NotificationBell from '../components/NotificationBell';
+import SupportSessionBanner from '../components/SupportSessionBanner';
 import ThemeToggle from '../theme/ThemeToggle';
 import { useTheme } from '../theme/ThemeContext';
 import { getActorRole } from '../utils/jwt';
@@ -30,7 +31,7 @@ const DQHubInner: React.FC = () => {
 
   const platformRole = getActorRole(localStorage.getItem('access_token'));
   const isPlatformAdmin = platformRole === 'platform_admin';
-  const { currentWorkspace } = useWorkspace();
+  const { currentWorkspace, currentTenantId } = useWorkspace();
   const currentWorkspaceId = currentWorkspace?.workspace_id;
 
   // Self-contained: resolves workspace_id from URL params, permissions internally.
@@ -182,7 +183,7 @@ const DQHubInner: React.FC = () => {
           <div className="flex items-center gap-3">
             <ContextHeader />
             <ThemeToggle />
-            <NotificationBell workspaceId={currentWorkspaceId} />
+            <NotificationBell workspaceId={currentWorkspaceId ?? null} />
             <RoleBadge workspaceId={currentWorkspaceId} />
           </div>
         </div>
@@ -190,6 +191,11 @@ const DQHubInner: React.FC = () => {
         {/* Content */}
         <div className="flex-1 overflow-auto bg-surface text-content">
           <div className="p-6">
+            <SupportSessionBanner
+              isPlatformOp={isPlatformAdmin}
+              tenantId={currentTenantId}
+              workspaceId={currentWorkspaceId}
+            />
             <Outlet />
           </div>
         </div>

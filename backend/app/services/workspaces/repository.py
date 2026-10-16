@@ -588,7 +588,7 @@ class WorkspaceRepository:
     def list_workspaces(
         self,
         db: Session,
-        tenant_id: uuid.UUID,
+        tenant_id: uuid.UUID | None,
         *,
         include_archived: bool = False,
         q: str | None = None,
@@ -638,9 +638,14 @@ class WorkspaceRepository:
             raise ValueError(f"sort_dir must be 'asc' or 'desc', got '{sort_dir}'")
         safe_sort_dir = sort_dir  # validated; safe to interpolate
 
-        # Build WHERE predicates and params
-        params: dict = {"tenant_id": str(tenant_id)}
-        where_clauses = ["w.tenant_id = CAST(:tenant_id AS UUID)"]
+        # Build WHERE predicates and params.
+        # tenant_id is None for platform operators with no tenant claim —
+        # they see workspaces across all tenants (mirrors list_audit_logs).
+        params: dict = {}
+        where_clauses = []
+        if tenant_id is not None:
+            params["tenant_id"] = str(tenant_id)
+            where_clauses.append("w.tenant_id = CAST(:tenant_id AS UUID)")
 
         if not include_archived:
             where_clauses.append("w.status = 'active'")

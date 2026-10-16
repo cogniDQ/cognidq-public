@@ -123,12 +123,16 @@ export default function EscalateToIncidentModal({
       aria-modal="true"
       aria-labelledby="escalate-title"
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
     >
       <div
         ref={dialogRef}
         className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-edge bg-surface-raised p-4 shadow-2xl sm:rounded-2xl sm:p-6"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">

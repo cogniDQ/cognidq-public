@@ -68,8 +68,6 @@ export const OverviewDashboard: React.FC = () => {
     return <div className="flex items-center justify-center h-64 text-gray-500">No data available</div>;
   }
 
-  const totalDs = inventory.total_datasets || 1;
-  const totalFlows = inventory.total_flows || 1;
   const totalChecks = checks.total_checks || 1;
   const dimensionData = (checks.checks_by_dimension || []).map((d) => ({ name: d.dimension, value: d.count }));
   return (

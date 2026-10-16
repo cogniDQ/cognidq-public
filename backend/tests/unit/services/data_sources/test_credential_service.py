@@ -54,7 +54,9 @@ class TestEncrypt:
     def test_two_encryptions_produce_different_ciphertext(self):
         """Fernet uses a random IV per encryption call."""
         creds = {"password": "abc"}
-        assert encrypt(creds) != encrypt(creds)
+        first = encrypt(creds)
+        second = encrypt(creds)
+        assert first != second
 
 
 # ─────────────────────────────────────────────────────────────────────────────

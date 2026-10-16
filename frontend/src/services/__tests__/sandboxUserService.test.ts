@@ -21,7 +21,9 @@ import { api } from '@/services/api';
 const mockGet = vi.mocked(api.get);
 const mockPost = vi.mocked(api.post);
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 // ── sandboxUserService ────────────────────────────────────────────────────────
 

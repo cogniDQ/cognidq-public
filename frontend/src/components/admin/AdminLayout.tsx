@@ -42,7 +42,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <Logo variant="light" className="h-7 w-auto" />
             </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link to="/admin/tenants" className="hover:text-white transition-colors">
+            <Link to="/admin" className="hover:text-white transition-colors">
               Admin
             </Link>
           </div>

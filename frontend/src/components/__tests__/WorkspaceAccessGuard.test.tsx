@@ -107,15 +107,17 @@ describe('WorkspaceAccessGuard (F131 P03)', () => {
     })
   })
 
-  // T03-06: platform_admin bypasses the membership check — access is granted
-  // even when the workspace fetch fails (cross-tenant access).
-  it('T03-06: platform_admin is granted access even when getWorkspace fails', async () => {
+  // T03-06: platform_admin no longer bypasses the membership check — without
+  // an active support access grant, a failed workspace fetch (403) shows the
+  // "needs grant" guidance instead of the client's workspace content.
+  it('T03-06: platform_admin sees the support-access prompt when getWorkspace fails', async () => {
     mockGetActorRole.mockReturnValue('platform_admin')
     mockGetWorkspace.mockRejectedValueOnce({ response: { status: 403 } })
     renderGuard(VALID_WS_ID)
     await waitFor(() => {
-      expect(screen.queryByTestId('workspace-page')).not.toBeNull()
+      expect(screen.queryByText('No active support access grant')).not.toBeNull()
     })
+    expect(screen.queryByTestId('workspace-page')).toBeNull()
   })
 
   // T03-07: Shows loading spinner while the workspace fetch is in progress

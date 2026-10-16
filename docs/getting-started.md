@@ -92,9 +92,11 @@ This runs all 60+ ordered SQL migration files from
 docker compose exec backend python scripts/seed_demo_data.py
 ```
 
-This creates a demo tenant, a demo workspace, and demo users so you can
-log in immediately. Sample datasets are in `examples/datasets/` and
-`seed-data/`.
+This creates a demo tenant, a demo workspace, and two demo logins — and
+pre-loads the workspace with a live connection, datasets, glossary terms,
+DQ rules, a flow, open issues, and one real flow run so every feature page
+has content to explore. Additional sample files are in `examples/datasets/`
+and `seed-data/`.
 
 ## 6. Open the app
 
@@ -112,10 +114,16 @@ log in immediately. Sample datasets are in `examples/datasets/` and
 | Role | Email | Password |
 |---|---|---|
 | Platform admin | `admin@example.com` | `change-me-strong-password` |
-| Tenant admin | `tenant.admin@example.com` | `change-me-strong-password` |
-| Workspace admin | `ws.admin@example.com` | `change-me-strong-password` |
-| Data steward | `steward@example.com` | `change-me-strong-password` |
-| Viewer | `viewer@example.com` | `change-me-strong-password` |
+| Tenant admin | `qa.tenantadmin@rbac-qa.test` | `change-me-strong-password` |
+| Data steward | `qa.datasteward@rbac-qa.test` | `change-me-strong-password` |
+
+> Use **tenant admin** to manage the Demo Workspace's connections and
+> members (and to grant the platform admin a temporary support access
+> grant, since it has no standing access on its own); use **data
+> steward** to see the product the way a scoped workspace user does.
+> The full set of per-role accounts is in
+> [TEST_CREDENTIALS.md](../TEST_CREDENTIALS.md). Create more users/roles
+> from the admin UI when you need them.
 
 > **Demo passwords are intentionally identical and weak.** They exist
 > only to make the demo painless. **Never** use them outside your local

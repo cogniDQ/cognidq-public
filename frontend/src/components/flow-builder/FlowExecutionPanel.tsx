@@ -264,6 +264,13 @@ export function FlowExecutionPanel({
                   <div 
                     className="flex-1 cursor-pointer hover:bg-dark-800/30 -m-2 p-2 rounded transition-colors"
                     onClick={() => toggleExecution(execution.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        toggleExecution(execution.id)
+                      }
+                    }}
+                    tabIndex={0}
                   >
                   <div className="flex items-center space-x-3">
                     {isExpanded ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}

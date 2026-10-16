@@ -1252,11 +1252,25 @@ async def get_workspace_detail(
     )
 
     try:
-        # Platform operators may access workspaces across all tenants; pass None
-        # so the repository uses the any-tenant query instead of scoping by tenant_id.
-        effective_tenant_id = (
-            None if actor.actor_role in PLATFORM_OPERATOR_ROLES else actor.tenant_id
-        )
+        # Platform operators may access workspaces across all tenants, but only
+        # while a tenant-admin-issued support access grant is active for this
+        # workspace — otherwise they're scoped like anyone else (which, lacking
+        # a membership row, will 404 below rather than leaking existence).
+        if actor.actor_role in PLATFORM_OPERATOR_ROLES:
+            from app.services.support_access.service import has_active_grant
+
+            if not has_active_grant(db, tenant_id=None, workspace_id=workspace_id):
+                raise WorkspaceAPIError(
+                    status_code=403,
+                    code="forbidden",
+                    message=(
+                        "This workspace requires an active support access grant from "
+                        "the tenant admin."
+                    ),
+                )
+            effective_tenant_id = None
+        else:
+            effective_tenant_id = actor.tenant_id
         workspace, dataset_count, member_count, warnings = service.get_workspace_detail(
             db=db,
             workspace_id=workspace_id,
@@ -1930,8 +1944,13 @@ async def get_workspace_stats(
     row = db.execute(
         text("""
             SELECT
-                (SELECT COUNT(*) FROM data_sources
-                 WHERE workspace_id = :wid) AS datasource_count,
+                (SELECT COUNT(DISTINCT ds.data_source_id)
+                 FROM control.data_sources ds
+                 LEFT JOIN control.workspace_connection_assignments wca
+                   ON wca.connection_id = ds.data_source_id
+                 WHERE ds.status = 'active'
+                   AND (ds.workspace_id = :wid OR wca.workspace_id = :wid)
+                ) AS datasource_count,
                 (SELECT COUNT(*) FROM control.metadata_term_index
                  WHERE workspace_id = :wid) AS glossary_count,
                 (SELECT COUNT(*) FROM dq_flows

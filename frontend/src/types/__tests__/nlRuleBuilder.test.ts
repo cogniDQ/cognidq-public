@@ -6,12 +6,7 @@ import { describe, it, expect } from 'vitest'
 import { DEFAULT_DRAFT } from '@/types/nlRuleBuilder'
 import type {
   RuleType,
-  SIREntity,
-  SIRCondition,
-  SIRScope,
-  StructuredIntermediateRepresentation,
   ParseRuleRequest,
-  ParseRuleResponse,
   NLRuleDraft,
   RecentParseEntry,
 } from '@/types/nlRuleBuilder'

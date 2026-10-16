@@ -23,6 +23,8 @@ interface NodeResult {
   result_data?: any;
 }
 
+type RgbColor = [number, number, number];
+
 export async function generateExecutionReportPDF(
   execution: ExecutionData,
   nodeResults: NodeResult[],
@@ -34,10 +36,10 @@ export async function generateExecutionReportPDF(
   let yPosition = 20;
 
   // Colors
-  const successColor = [34, 197, 94]; // Green
-  const errorColor = [239, 68, 68]; // Red
-  const grayColor = [156, 163, 175];
-  const darkGray = [75, 85, 99];
+  const successColor: RgbColor = [34, 197, 94]; // Green
+  const errorColor: RgbColor = [239, 68, 68]; // Red
+  const grayColor: RgbColor = [156, 163, 175];
+  const darkGray: RgbColor = [75, 85, 99];
 
   // ===== HEADER WITH GRADIENT EFFECT =====
   // Blue gradient background
@@ -164,7 +166,7 @@ export async function generateExecutionReportPDF(
   const metrics = [
     { label: 'Total Checks', value: execution.nodes_executed || 0, color: grayColor },
     { label: 'Passed', value: execution.nodes_passed || 0, color: successColor },
-    { label: 'Warnings', value: 0, color: [251, 191, 36] },
+    { label: 'Warnings', value: 0, color: [251, 191, 36] as RgbColor },
     { label: 'Failed', value: execution.nodes_failed || 0, color: errorColor },
     { label: 'Skipped', value: execution.nodes_skipped || 0, color: grayColor },
     { 

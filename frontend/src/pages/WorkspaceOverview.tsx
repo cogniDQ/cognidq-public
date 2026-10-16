@@ -3,14 +3,21 @@ import { Link, useParams } from 'react-router-dom';
 import { Database, BookOpen, GitBranch, FileCode, ArrowRight, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useWorkspace } from '../contexts/WorkspaceContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useTenantScopedPath } from '../hooks/useTenantScopedPath';
 import reportingService from '../services/reportingService';
 
 const WorkspaceOverview: React.FC = () => {
   const { workspace_id: urlWorkspaceId } = useParams();
   const { currentWorkspace } = useWorkspace();
+  const { user } = useAuth();
   const workspaceId = urlWorkspaceId || currentWorkspace?.workspace_id;
   const { wsPath, tenantPath } = useTenantScopedPath();
+
+  // Connections pages are tenant-admin only (see navigationConfig /
+  // TenantAdminGuard) — hide the card for roles that would hit Access Denied.
+  const canManageConnections =
+    user?.platform_role === 'tenant_admin' || user?.platform_role === 'platform_admin';
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['workspace-stats', workspaceId],
@@ -22,13 +29,27 @@ const WorkspaceOverview: React.FC = () => {
   const wsBase = workspaceId ? wsPath(workspaceId) : '/hub';
 
   const features = [
-    {
-      icon: Database,
-      title: 'Connections',
-      description: 'Connect and manage your data sources. Configure databases, data lakes, and file sources.',
-      link: tenantPath('/connections'),
-      color: 'from-blue-600 to-cyan-600',
-    },
+    ...(canManageConnections
+      ? [
+          {
+            icon: Database,
+            title: 'Connections',
+            description:
+              'Connect and manage your data sources. Configure databases, data lakes, and file sources.',
+            link: tenantPath('/connections'),
+            color: 'from-blue-600 to-cyan-600',
+          },
+        ]
+      : [
+          {
+            icon: Database,
+            title: 'Datasets',
+            description:
+              'Browse the datasets assigned to this workspace and inspect their quality profiles.',
+            link: workspaceId ? wsPath(workspaceId, '/datasets') : '/hub',
+            color: 'from-blue-600 to-cyan-600',
+          },
+        ]),
     {
       icon: BookOpen,
       title: 'Glossary',
@@ -105,23 +126,57 @@ const WorkspaceOverview: React.FC = () => {
       </div>
 
       <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-xl p-8 mt-12">
-        <h2 className="text-2xl font-bold text-content mb-4">Getting Started</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-content mb-4">Getting Started</h2>
+          <Link
+            to={workspaceId ? wsPath(workspaceId, '/onboarding') : '/hub'}
+            className="text-sm font-semibold text-purple-400 hover:underline"
+          >
+            View as a full guide →
+          </Link>
+        </div>
         <div className="space-y-3 text-content-muted">
           <div className="flex items-start space-x-3">
             <span className="text-purple-400 font-bold">1.</span>
-            <span>Connect your first data source to start monitoring data quality</span>
+            {canManageConnections ? (
+              <Link to={tenantPath('/connections')} className="hover:text-content hover:underline">
+                Connect your first data source to start monitoring data quality
+              </Link>
+            ) : (
+              <span>
+                <Link
+                  to={workspaceId ? wsPath(workspaceId, '/datasets') : '/hub'}
+                  className="hover:text-content hover:underline"
+                >
+                  View datasets assigned to this workspace
+                </Link>
+                {' '}— ask your tenant admin to connect a data source if none are listed yet
+              </span>
+            )}
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-purple-400 font-bold">2.</span>
-            <span>Define business terms in the glossary for consistency</span>
+            <Link
+              to={workspaceId ? wsPath(workspaceId, '/glossary') : '/hub'}
+              className="hover:text-content hover:underline"
+            >
+              Define business terms in the glossary for consistency
+            </Link>
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-purple-400 font-bold">3.</span>
-            <span>Build your first data quality rule using AI or visual builder</span>
+            <Link to={`${wsBase}/nl-rule-builder`} className="hover:text-content hover:underline">
+              Build your first data quality rule using AI or visual builder
+            </Link>
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-purple-400 font-bold">4.</span>
-            <span>Create flows to automate quality checks across your data pipeline</span>
+            <Link
+              to={workspaceId ? wsPath(workspaceId, '/flows') : '/hub'}
+              className="hover:text-content hover:underline"
+            >
+              Create flows to automate quality checks across your data pipeline
+            </Link>
           </div>
         </div>
       </div>

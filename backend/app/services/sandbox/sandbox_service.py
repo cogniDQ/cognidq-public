@@ -264,9 +264,9 @@ class SandboxService:
                     _emit_expiration_reminder_email(UUID(str(row["id"])), hours)
                     reminders_sent += 1
 
-        # 2. Suspend expired active sandboxes
-        now + timedelta(hours=grace_hours)
-        expired_candidates = self._env_repo.list_expiring(threshold_at=now)
+        # 2. Suspend expired active sandboxes (only once past the grace period)
+        grace_cutoff = now - timedelta(hours=grace_hours)
+        expired_candidates = self._env_repo.list_expiring(threshold_at=grace_cutoff)
         for row in expired_candidates:
             if row.get("status") != "active":
                 continue
@@ -275,7 +275,7 @@ class SandboxService:
                 continue
             if not exp.tzinfo:
                 exp = exp.replace(tzinfo=UTC)
-            if exp <= now:
+            if exp <= grace_cutoff:
                 self._env_repo.update_status(
                     sandbox_id=UUID(str(row["id"])),
                     status="expired",

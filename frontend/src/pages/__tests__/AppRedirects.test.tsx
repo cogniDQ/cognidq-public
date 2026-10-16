@@ -6,7 +6,6 @@
  */
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { vi } from 'vitest'
 
 // Minimal Navigate-only test harness — no need to render the full App
 import { Navigate } from 'react-router-dom'

@@ -6,7 +6,6 @@ import { DataTable } from '../widgets/DataTable';
 import { PeriodSelector } from '../widgets/PeriodSelector';
 import { ChartBarIcon, CurrencyDollarIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { useWorkspace } from '../../contexts/WorkspaceContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { useWorkspacePermissions } from '../../hooks/useWorkspacePermissions';
 import { getActorId } from '../../utils/jwt';
 import {

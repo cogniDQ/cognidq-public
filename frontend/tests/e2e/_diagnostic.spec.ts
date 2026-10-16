@@ -3,7 +3,7 @@
  * Not part of the regular test run; invoke explicitly:
  *   npx playwright test tests/e2e/_diagnostic.spec.ts --project=chromium
  */
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs/promises';
@@ -62,5 +62,6 @@ test('diagnostic — screenshots of blocked pages', async ({ page }) => {
     const url = page.url();
     // eslint-disable-next-line no-console
     console.log(`captured ${p} -> ended on ${url}`);
+    expect(url, `navigation for ${p} should not land on an error page`).not.toContain('/error');
   }
 });

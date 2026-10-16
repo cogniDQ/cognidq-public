@@ -128,6 +128,7 @@ export interface ClarificationTurn {
 export interface ParseRuleRequest {
   rule_text: string
   dataset_id?: string
+  context?: Record<string, unknown>
   domain?: string
   source_system?: string
   rule_category?: string
@@ -299,7 +300,7 @@ export interface ValidateParseResponse {
 
 export interface SavedParseEntry {
   request_id: string
-  parse_result_id: string
+  parse_result_id?: string
   rule_text: string
   rule_type: string
   confidence: number

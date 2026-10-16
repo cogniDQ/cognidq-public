@@ -33,6 +33,7 @@ never echoes credentials in errors (consistent with :meth:`normalize_error`).
 
 from __future__ import annotations
 
+import asyncio
 import os
 from pathlib import Path
 from typing import Any
@@ -156,10 +157,15 @@ class CSVConnector(BaseConnector):
         path = self._resolve_path()
         # Streaming line count, minus header if present.
         encoding = self.connection_config.get("encoding") or "utf-8"
-        count = 0
-        with open(path, encoding=encoding, errors="replace") as fh:
-            for _ in fh:
-                count += 1
+
+        def _count_lines() -> int:
+            n = 0
+            with open(path, encoding=encoding, errors="replace") as fh:
+                for _ in fh:
+                    n += 1
+            return n
+
+        count = await asyncio.to_thread(_count_lines)
         if self._has_header():
             count = max(0, count - 1)
         return count

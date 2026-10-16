@@ -259,6 +259,9 @@ function InviteModal({ tenantId, onClose, onCreated }: InviteModalProps) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
     >
       <div className="relative w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl p-6">
         <h2 className="text-lg font-semibold text-white mb-4">Invite to Tenant</h2>

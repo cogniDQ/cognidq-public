@@ -59,16 +59,18 @@ export default function RuleExecutionsModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="rule-executions-title"
       data-testid="rule-executions-modal"
     >
-      <div
-        className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-xl border border-gray-700 bg-gray-900 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="w-full max-w-3xl max-h-[85vh] flex flex-col rounded-xl border border-gray-700 bg-gray-900 shadow-xl">
         <header className="flex items-start justify-between gap-3 border-b border-gray-700 px-5 py-3">
           <div>
             <h2

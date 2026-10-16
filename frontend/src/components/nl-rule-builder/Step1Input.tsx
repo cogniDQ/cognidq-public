@@ -1,5 +1,5 @@
 import { Loader2, Sparkles, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react'
-import type { NLRuleDraft, RecentParseEntry } from '@/types/nlRuleBuilder'
+import type { NLRuleDraft, RecentParseEntry, SavedParseEntry } from '@/types/nlRuleBuilder'
 import RuleTextInput from './RuleTextInput'
 import ContextPanel from './ContextPanel'
 import ExampleSuggestions from './ExampleSuggestions'
@@ -11,16 +11,6 @@ interface Dataset {
   name: string
   dataset_id?: string
   data_source_name?: string
-}
-
-interface SavedParseEntry {
-  request_id: string
-  rule_text: string
-  rule_type: string
-  confidence: number
-  status: string
-  validated: boolean
-  created_at: string
 }
 
 interface Step1InputProps {

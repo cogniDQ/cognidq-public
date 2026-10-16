@@ -4,7 +4,10 @@ File Upload Service
 Handle file uploads with validation, parsing, and temporary storage.
 """
 
+import asyncio
 import io
+import os
+import tempfile
 import uuid
 from pathlib import Path
 from typing import Any, BinaryIO
@@ -73,8 +76,15 @@ class FileUploadService:
         Args:
             upload_dir: Directory to store uploaded files (temp storage)
         """
-        self.upload_dir = Path(upload_dir or settings.UPLOAD_DIR or "/tmp/dq_uploads")
+        self.upload_dir = Path(
+            upload_dir or settings.UPLOAD_DIR or os.path.join(tempfile.gettempdir(), "dq_uploads")
+        )
+        # Refuse a pre-existing symlink (possible planted-path attack in a
+        # shared temp directory) and keep the directory owner-only.
+        if self.upload_dir.is_symlink():
+            raise RuntimeError(f"Upload directory {self.upload_dir} must not be a symlink")
         self.upload_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(self.upload_dir, 0o700)
 
     def validate_file(self, file: UploadFile) -> str:
         """
@@ -150,8 +160,12 @@ class FileUploadService:
         else:
             # Save to local filesystem
             temp_path = self.upload_dir / filename
-            with open(temp_path, "wb") as f:
-                f.write(file_content)
+
+            def _write_file() -> None:
+                with open(temp_path, "wb") as f:
+                    f.write(file_content)
+
+            await asyncio.to_thread(_write_file)
             return str(temp_path)
 
     def get_file_stream(self, file_path: str) -> BinaryIO:

@@ -90,6 +90,9 @@ export default function AddMemberModal({ workspaceId, onClose, onAdded }: AddMem
       onClick={e => {
         if (e.target === e.currentTarget) onClose();
       }}
+      onKeyDown={e => {
+        if (e.key === 'Escape') onClose();
+      }}
     >
       <div className="relative w-full max-w-md bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl p-6">
         {/* Close button */}

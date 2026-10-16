@@ -193,11 +193,13 @@ async def execute_rule(
             detail=f"Rule {rule_id} not found in organization {workspace_id}",
         )
 
+    actor_id = token.user_id or UUID("00000000-0000-0000-0000-000000000001")
     try:
         execution = await service.execute_rule(
             rule_id=rule_id,
             workspace_id=workspace_id,
             request=body,
+            executed_by=actor_id,
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))

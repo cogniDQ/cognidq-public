@@ -73,7 +73,9 @@ describe('Glossary — tenant scope', () => {
     mockList.mockResolvedValue({ items: MOCK_TERMS, total: 1, page: 1, page_size: 200 })
   })
 
-  afterEach(() => vi.restoreAllMocks())
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   it('calls listTenantGlossaryTerms with tenant_id', async () => {
     renderGlossary()

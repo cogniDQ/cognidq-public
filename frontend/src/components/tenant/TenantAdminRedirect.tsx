@@ -5,7 +5,6 @@
  * If the caller has no tenant_id (e.g. platform_admin who hasn't picked a
  * tenant yet), routes to /admin/tenants instead.
  */
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { getTenantId, getActorRole } from '../../utils/jwt';
 

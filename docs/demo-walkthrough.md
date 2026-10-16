@@ -11,21 +11,23 @@ Prerequisite: local stack running and seeded
 ## Cast of characters
 
 The seed loader creates these users (all with password
-`change-me-strong-password`):
+`change-me-strong-password`) in the RBAC QA tenant, scoped to the Demo
+Workspace — full list in [TEST_CREDENTIALS.md](../TEST_CREDENTIALS.md):
 
-- `admin@example.com` — platform admin
-- `tenant.admin@example.com` — tenant admin
-- `ws.admin@example.com` — workspace administrator
-- `engineer@example.com` — data engineer
-- `steward@example.com` — data steward (most demos use this)
-- `analyst@example.com` — business analyst
-- `viewer@example.com` — governance viewer
+- `admin@example.com` — platform admin (global; needs a support access
+  grant from the tenant admin to see tenant/workspace content)
+- `qa.tenantadmin@rbac-qa.test` — tenant admin
+- `qa.wsadmin@rbac-qa.test` — workspace administrator
+- `qa.dataengineer@rbac-qa.test` — data engineer
+- `qa.datasteward@rbac-qa.test` — data steward (most demos use this)
+- `qa.analyst@rbac-qa.test` — business analyst
+- `qa.viewer@rbac-qa.test` — governance viewer
 
 ## Scene 1 — "What does CogniDQ do?" (1 min)
 
-1. Sign in as `admin@example.com`. Show the platform admin landing
-   page: tenants, system info, version (`/api/v1/system/version`).
-2. Switch scope to **Acme Corp → Demo Workspace**.
+1. Sign in as `qa.tenantadmin@rbac-qa.test`. Show the tenant admin
+   landing page: connections, members, workspaces.
+2. Switch scope to **RBAC QA → Demo Workspace**.
 
 > Talking point: "CogniDQ is a control plane for data quality.
 > Connections, datasets, rules, executions, issues. Multi-tenant from
@@ -118,7 +120,7 @@ The seed loader creates these users (all with password
 
 ## Scene 9 — RBAC (30 s)
 
-1. Sign out. Sign in as `analyst@example.com`.
+1. Sign out. Sign in as `qa.analyst@rbac-qa.test`.
 2. Try to edit a rule — buttons are absent.
 3. Show that the analyst can comment on issues but not change their
    status.
@@ -128,7 +130,7 @@ The seed loader creates these users (all with password
 
 ## Scene 10 — Audit (30 s)
 
-1. Sign in as `viewer@example.com` (governance_viewer).
+1. Sign in as `qa.viewer@rbac-qa.test` (governance_viewer).
 2. Open **Audit log**. Show the events from earlier in the demo:
    `rule.run`, `issue.update`, `incident.create`, `evidence.read`.
 
