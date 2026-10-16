@@ -97,7 +97,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
     order: 2,
     visibility: 'workspace',
     items: [
-      { id: 'getting-started',   label: 'Getting Started',   path: '/onboarding',                                          icon: Sparkles },
+      { id: 'getting-started',   label: 'Getting Started',   path: '/hub/t/:tenant_id/ws/:workspace_id/onboarding',       icon: Sparkles },
       { id: 'overview',          label: 'Overview',          path: '/hub/t/:tenant_id/ws/:workspace_id/overview',          icon: LayoutDashboard },
       // Glossary is a tenant-scoped resource surfaced in workspace context.
       // Connections live under Tenant Administration (managed by tenant_admin only).

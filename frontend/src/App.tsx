@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
-import { WorkspaceProvider } from './contexts/WorkspaceContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminGuard from './components/admin/AdminGuard'
@@ -104,16 +103,6 @@ function App() {
             <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
             <Route path="/status" element={<Layout><StatusPage /></Layout>} />
             <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
-
-            <Route path="/onboarding" element={
-              <ProtectedRoute>
-                <WorkspaceProvider>
-                  <Layout>
-                    <OnboardingWizardPage />
-                  </Layout>
-                </WorkspaceProvider>
-              </ProtectedRoute>
-            } />
 
             <Route path="/" element={
               <Layout>
@@ -228,6 +217,7 @@ function App() {
               {/* Workspace-parameterized routes — guarded by WorkspaceAccessGuard (F131 P03) */}
               <Route path="ws/:workspace_id" element={<WorkspaceAccessGuard />}>
                 <Route path="overview" element={<WorkspaceOverview />} />
+                <Route path="onboarding" element={<OnboardingWizardPage />} />
                 <Route path="flows" element={<FlowsList />} />
                 <Route path="flow-builder" element={<RuleFlowBuilder />} />
                 <Route path="executions" element={<FlowExecutions />} />
@@ -294,6 +284,7 @@ function App() {
               {/* Tenant-scoped workspace routes — alias of /hub/ws/:workspace_id/* with tenant context in URL */}
               <Route path="t/:tenant_id/ws/:workspace_id" element={<WorkspaceAccessGuard />}>
                 <Route path="overview" element={<WorkspaceOverview />} />
+                <Route path="onboarding" element={<OnboardingWizardPage />} />
                 <Route path="flows" element={<FlowsList />} />
                 <Route path="flow-builder" element={<RuleFlowBuilder />} />
                 <Route path="executions" element={<FlowExecutions />} />
@@ -335,6 +326,9 @@ function App() {
             <Route path="/login" element={<Navigate to="/auth/login" replace />} />
             <Route path="/register" element={<Navigate to="/auth/register" replace />} />
             <Route path="/profile" element={<Navigate to="/hub/profile" replace />} />
+            {/* "Getting Started" now lives inside the workspace shell, not as a
+                standalone top-level page — redirect old bookmarks/links. */}
+            <Route path="/onboarding" element={<Navigate to="/hub" replace />} />
             <Route path="/settings" element={<Navigate to="/hub/settings" replace />} />
             {/* F132 P04: platform_admin no longer has Workspaces in nav (hidden by useNavigationMenu).
                 These legacy redirects remain for direct-link compatibility only. */}

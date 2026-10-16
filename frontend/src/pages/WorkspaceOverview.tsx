@@ -128,7 +128,10 @@ const WorkspaceOverview: React.FC = () => {
       <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-500/30 rounded-xl p-8 mt-12">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-content mb-4">Getting Started</h2>
-          <Link to="/onboarding" className="text-sm font-semibold text-purple-400 hover:underline">
+          <Link
+            to={workspaceId ? wsPath(workspaceId, '/onboarding') : '/hub'}
+            className="text-sm font-semibold text-purple-400 hover:underline"
+          >
             View as a full guide →
           </Link>
         </div>
