@@ -30,15 +30,22 @@ class SparkCheckExecutor:
         compiled_sql: str,
         canonical_rule: dict[str, Any],
         sample_only: bool = False,
+        connection_config: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """
         Execute check using Spark.
 
         Args:
-            data_source_config: Data source connection configuration (encrypted)
+            data_source_config: Data source metadata (id, name, type, …).
+                Never holds decrypted credentials — those arrive
+                separately via ``connection_config`` so they never get
+                persisted into flow_node_results.
             compiled_sql: Compiled Spark SQL query
             canonical_rule: Canonical rule definition
             sample_only: If True, limit rows for sampling
+            connection_config: Decrypted host/port/database/username/
+                password, resolved by the caller (e.g.
+                ``check_node._resolve_connection_config``).
 
         Returns:
             Dictionary with execution results
@@ -49,7 +56,9 @@ class SparkCheckExecutor:
             from app.services.datasources.connection_manager import ConnectionManager
 
             decrypted_config = ConnectionManager.decrypt_config(
-                data_source_config.get("connection_config", {})
+                connection_config
+                if connection_config is not None
+                else data_source_config.get("connection_config", {})
             )
 
             # Add type to config
@@ -329,16 +338,22 @@ class SparkCheckExecutor:
             pass
 
     async def get_table_row_count(
-        self, data_source_config: dict[str, Any], schema_name: str, table_name: str
+        self,
+        data_source_config: dict[str, Any],
+        schema_name: str,
+        table_name: str,
+        connection_config: dict[str, Any] | None = None,
     ) -> int:
         """
         Get approximate row count for a table using Spark.
         Used to determine execution mode.
 
         Args:
-            data_source_config: Data source connection configuration (encrypted)
+            data_source_config: Data source metadata (id, name, type, …).
             schema_name: Schema name
             table_name: Table name
+            connection_config: Decrypted host/port/database/username/
+                password, resolved by the caller.
 
         Returns:
             Approximate row count
@@ -349,7 +364,9 @@ class SparkCheckExecutor:
             from app.services.datasources.connection_manager import ConnectionManager
 
             decrypted_config = ConnectionManager.decrypt_config(
-                data_source_config.get("connection_config", {})
+                connection_config
+                if connection_config is not None
+                else data_source_config.get("connection_config", {})
             )
 
             # Add type to config

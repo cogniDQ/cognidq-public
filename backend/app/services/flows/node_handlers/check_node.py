@@ -449,8 +449,9 @@ class CheckNodeHandler(BaseNodeHandler):
                 else:
                     # Database source - determine execution mode (direct vs Spark)
                     logger.info("📊 Database source - determining execution mode...")
+                    connection_config = await self._resolve_connection_config(context, data_source)
                     execution_mode = await self._determine_execution_mode(
-                        data_source, schema_name, table_name, config
+                        data_source, schema_name, table_name, config, connection_config
                     )
 
                     logger.info(f"✅ Selected execution mode: {execution_mode}")
@@ -471,6 +472,7 @@ class CheckNodeHandler(BaseNodeHandler):
                             compiled_sql=compiled_sql,
                             canonical_rule=canonical_rule,
                             sample_only=context.execution_config.get("sample_only", False),
+                            connection_config=connection_config,
                         )
                         logger.info(f"✅ Spark execution result: {execution_result}")
                     else:
@@ -724,7 +726,12 @@ class CheckNodeHandler(BaseNodeHandler):
         return True
 
     async def _determine_execution_mode(
-        self, data_source: dict[str, Any], schema_name: str, table_name: str, config: dict[str, Any]
+        self,
+        data_source: dict[str, Any],
+        schema_name: str,
+        table_name: str,
+        config: dict[str, Any],
+        connection_config: dict[str, Any] | None = None,
     ) -> str:
         """
         Determine whether to use Spark or direct execution.
@@ -734,6 +741,11 @@ class CheckNodeHandler(BaseNodeHandler):
             schema_name: Schema name
             table_name: Table name
             config: Node configuration
+            connection_config: Decrypted connection details (host/port/
+                database/username/password), resolved by
+                ``_resolve_connection_config``. Without this, the Spark
+                row-count probe has nothing to connect with and always
+                fails (silently falling back to direct execution).
 
         Returns:
             'spark' or 'direct'
@@ -750,7 +762,7 @@ class CheckNodeHandler(BaseNodeHandler):
             # Still need to check if dataset is too large for direct execution
             try:
                 row_count = await self.spark_executor.get_table_row_count(
-                    data_source, schema_name, table_name
+                    data_source, schema_name, table_name, connection_config
                 )
                 if row_count > force_threshold:
                     logger.warning(
@@ -769,7 +781,7 @@ class CheckNodeHandler(BaseNodeHandler):
         # Auto-determine based on dataset size
         try:
             row_count = await self.spark_executor.get_table_row_count(
-                data_source, schema_name, table_name
+                data_source, schema_name, table_name, connection_config
             )
 
             use_spark, reason = self.spark_executor.should_use_spark(
@@ -1774,6 +1786,42 @@ class CheckNodeHandler(BaseNodeHandler):
             "expectation": str(threshold) + "%",
             "severity": config.get("severity", "blocker"),
         }
+
+    async def _resolve_connection_config(
+        self, context: NodeExecutionContext, data_source: dict[str, Any]
+    ) -> dict[str, Any] | None:
+        """
+        Decrypt the data source's connection details (host/port/database/
+        username/password) for the Spark row-count probe and Spark check
+        execution.
+
+        Returned in-memory only, as a plain argument — callers must NOT
+        attach this to the `data_source` dict, since that dict is echoed
+        into ``flow_node_results.result_data`` (visible via the execution
+        API) and would leak plaintext credentials.
+        """
+        from sqlalchemy import text as sa_text
+
+        from app.services.data_sources import credential_service as cred_svc
+
+        cred_ref = data_source.get("credential_reference")
+        if not cred_ref:
+            return None
+
+        cred_row = context.db.execute(
+            sa_text("""
+                SELECT encrypted_payload
+                FROM control.data_source_credentials
+                WHERE credential_id = CAST(:cred_id AS UUID)
+                  AND superseded_at IS NULL
+            """),
+            {"cred_id": str(cred_ref)},
+        ).fetchone()
+
+        if not cred_row or not cred_row[0]:
+            return None
+
+        return cred_svc.decrypt(bytes(cred_row[0]))
 
     async def _execute_adhoc_check(
         self,
