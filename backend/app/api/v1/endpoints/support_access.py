@@ -18,9 +18,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
-
 from sqlalchemy import text as _sql_text
+from sqlalchemy.orm import Session
 
 from app.api.v1.dependencies.tenant_auth import (
     ActorContext,

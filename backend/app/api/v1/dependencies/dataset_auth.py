@@ -155,7 +155,9 @@ def _decode_token(token: str) -> dict:
     return payload
 
 
-def _require_support_grant_if_platform_admin(actor: "DatasetActorContext", request: Request) -> None:
+def _require_support_grant_if_platform_admin(
+    actor: "DatasetActorContext", request: Request
+) -> None:
     """platform_admin has no standing access to dataset content — only an
     active tenant-admin-issued support access grant allows it. No-op for
     every other role.

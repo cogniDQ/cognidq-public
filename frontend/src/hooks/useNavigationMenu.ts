@@ -78,8 +78,10 @@ export function useNavigationMenu(workspaceId?: string): UseNavigationMenuResult
         if (!effectiveWorkspaceId) continue;
         if (isPlatformOp && !hasActiveGrantHere) continue;
       }
-      // Tenant section: shown only for tenant_admin (and platform_admin preview).
-      if (section.visibility === 'tenant' && !(isTenantAdmin || platformRole === 'platform_admin')) continue;
+      // Tenant section: shown for tenant_admin and platform operators (preview).
+      // Per-item requiredPlatformRole filtering below still hides tenant-admin-only
+      // items (members, connections, etc.) from platform_viewer.
+      if (section.visibility === 'tenant' && !(isTenantAdmin || isPlatformOp)) continue;
 
       // Filter items by permission
       const visibleItems = section.items.filter((item) => {
@@ -91,9 +93,11 @@ export function useNavigationMenu(workspaceId?: string): UseNavigationMenuResult
         }
         if (item.requiredPermission) {
           if (workspacePermissions.has(item.requiredPermission)) return true;
-          // Platform operators only see workspace-scoped items while an
-          // active support access grant covers this workspace.
-          if (isPlatformOp && hasActiveGrantHere) return true;
+          // Platform operators can see permission-gated items outside the
+          // 'workspace' section (e.g. the tenant Workspaces list) freely —
+          // actual workspace-content items are already gated above at the
+          // section level by hasActiveGrantHere.
+          if (isPlatformOp) return true;
           // Tenant admins see all workspace-scoped items in their tenant
           if (isTenantAdmin) return true;
           return false;

@@ -410,11 +410,10 @@ def _create_demo_tables(cur) -> None:
 
 
 def _seed_demo_content() -> None:
-    from sqlalchemy import text
-
     from app.models.database import SessionLocal
     from app.services.data_sources import credential_service
     from app.services.demo.templates.general_dq.seeder import GeneralDQSeeder
+    from sqlalchemy import text
 
     db = SessionLocal()
     try:

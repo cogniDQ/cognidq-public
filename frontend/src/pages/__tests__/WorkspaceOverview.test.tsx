@@ -121,7 +121,7 @@ describe('WorkspaceOverview tiles (F132 P03)', () => {
       user: { email: 'steward@example.com', platform_role: null },
     })
     renderOverview()
-    const link = await screen.findByRole('link', { name: /datasets/i })
+    const link = await screen.findByRole('link', { name: /^datasets browse/i })
     expect(link.getAttribute('href')).toBe(`/hub/ws/${WS_ID}/datasets`)
     expect(screen.queryByRole('heading', { name: /^Connections$/i })).toBeNull()
   })

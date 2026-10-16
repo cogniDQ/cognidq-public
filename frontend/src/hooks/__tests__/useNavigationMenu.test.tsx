@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 import { useNavigationMenu } from '@/hooks/useNavigationMenu'
 
@@ -33,12 +34,15 @@ const mockUseWorkspacePermissions = vi.mocked(useWorkspacePermissions)
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function wrapper(pathname: string) {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return ({ children }: { children: ReactNode }) => (
-    <MemoryRouter initialEntries={[pathname]}>
-      <Routes>
-        <Route path="*" element={<>{children}</>} />
-      </Routes>
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[pathname]}>
+        <Routes>
+          <Route path="*" element={<>{children}</>} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 
