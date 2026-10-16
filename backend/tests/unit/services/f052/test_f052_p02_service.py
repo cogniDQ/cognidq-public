@@ -392,10 +392,10 @@ class TestConstants:
     """Sanity checks on constant frozen sets."""
 
     def test_action_types_count(self):
-        assert len(VALID_ACTION_TYPES) == 56
+        assert len(VALID_ACTION_TYPES) == 58
 
     def test_entity_types_count(self):
-        assert len(VALID_ENTITY_TYPES) == 16
+        assert len(VALID_ENTITY_TYPES) == 17
 
     def test_sensitive_fields_contains_password(self):
         assert "password" in SENSITIVE_FIELDS
